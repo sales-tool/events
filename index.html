@@ -1,10 +1,10 @@
 <!DOCTYPE html>
+
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="活動管理">
 <meta name="theme-color" content="#0F6E56">
 <title>活動管理</title>
@@ -13,7 +13,9 @@
   --teal:#0F6E56;--teal-d:#085041;--teal-m:#1D9E75;--teal-l:#E1F5EE;--teal-ll:#F0FAF6;
   --amber:#854F0B;--amber-l:#FAEEDA;--amber-m:#BA7517;
   --red:#A32D2D;--red-l:#FCEBEB;
-  --blue:#185FA5;--blue-l:#E6F1FB;
+  --blue:#185FA5;--blue-l:#E6F1FB;--blue-m:#378ADD;
+  --purple:#3C3489;--purple-l:#EEEDFE;--purple-m:#7F77DD;
+  --coral:#993C1D;--coral-l:#FAECE7;--coral-m:#D85A30;
   --gray:#5F5E5A;--gray-l:#F1EFE8;
   --border:rgba(0,0,0,0.1);--bord2:rgba(0,0,0,0.06);
   --bg:#F5F4F1;--card:#FFFFFF;--text:#18180F;--t2:#5F5E5A;--t3:#9A9893;
@@ -22,391 +24,587 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{font-family:-apple-system,'PingFang TC','Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);font-size:14px;min-height:100vh;}
 #app{max-width:720px;margin:0 auto;padding-bottom:80px;}
-.hdr{background:var(--card);border-bottom:1px solid var(--border);padding:14px 20px 10px;position:sticky;top:0;z-index:100;}
+
+/* ── Header ── */
+.hdr{background:var(–card);border-bottom:1px solid var(–border);padding:14px 20px 10px;position:sticky;top:0;z-index:100;}
 .hdr-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
-.app-ttl{font-size:20px;font-weight:700;color:var(--teal);letter-spacing:-.3px;}
-.app-sub{font-size:12px;color:var(--t3);margin-top:1px;}
-.btn-add{background:var(--teal);color:#fff;border:none;padding:8px 18px;border-radius:20px;font-size:13px;cursor:pointer;font-weight:600;}
-.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:14px 20px;}
-.sc{background:var(--card);border-radius:var(--rad-m);padding:10px 12px;border:1px solid var(--border);}
-.sv{font-size:20px;font-weight:700;}
-.sl{font-size:10px;color:var(--t2);margin-top:1px;line-height:1.3;}
-.filt{display:flex;gap:7px;padding:0 20px 12px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.app-ttl{font-size:20px;font-weight:700;color:var(–teal);letter-spacing:-.3px;}
+.app-sub{font-size:12px;color:var(–t3);margin-top:1px;}
+.btn-add{background:var(–teal);color:#fff;border:none;padding:8px 18px;border-radius:20px;font-size:13px;cursor:pointer;font-weight:600;}
+.filt-wrap{display:flex;flex-direction:column;gap:5px;}
+.filt{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;}
 .filt::-webkit-scrollbar{display:none;}
-.pill{padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:12px;color:var(--t2);white-space:nowrap;flex-shrink:0;}
-.pill.act{background:var(--teal);color:#fff;border-color:var(--teal);}
+.pill{padding:4px 12px;border-radius:20px;border:1px solid var(–border);background:var(–card);cursor:pointer;font-size:12px;color:var(–t2);white-space:nowrap;flex-shrink:0;}
+.pill.act{color:#fff;border-color:transparent;}
+.pill-med.act{background:var(–teal);}
+.pill-corp.act{background:var(–blue);}
+.pill-collab.act{background:var(–purple);}
+.pill-gs.act{background:var(–coral-m);}
+.pill-all.act{background:var(–gray);}
+.pill-hosp.act{background:var(–gray);color:#fff;}
+.filt-lbl{font-size:10px;color:var(–t3);font-weight:600;letter-spacing:.04em;text-transform:uppercase;flex-shrink:0;align-self:center;}
+
+/* ── Stats ── */
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:14px 20px 10px;}
+.sc{background:var(–card);border-radius:var(–rad-m);padding:10px 12px;border:1px solid var(–border);}
+.sv{font-size:20px;font-weight:700;}
+.sl{font-size:10px;color:var(–t2);margin-top:1px;line-height:1.3;}
+
+/* ── Event list ── */
 .evlist{padding:0 20px;display:flex;flex-direction:column;gap:10px;}
-.empty{text-align:center;padding:48px 20px;color:var(--t3);font-size:13px;}
-.ecard{background:var(--card);border-radius:var(--rad);border:1px solid var(--border);overflow:hidden;}
-.ecard.cwarn{border-left:3px solid var(--amber-m);}
+.empty{text-align:center;padding:48px 20px;color:var(–t3);font-size:13px;}
+
+/* ── Event card ── */
+.ecard{background:var(–card);border-radius:var(–rad);border:1px solid var(–border);overflow:hidden;}
+.ecard.cwarn{border-left:3px solid var(–amber-m);}
+.ecard-med{border-top:3px solid var(–teal);}
+.ecard-corp{border-top:3px solid var(–blue-m);}
+.ecard-collab{border-top:3px solid var(–purple-m);}
+.ecard-gs{border-top:3px solid var(–coral-m);}
 .ehead{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;user-select:none;}
-.ehead:active{background:var(--bg);}
+.ehead:active{background:var(–bg);}
 .pr{position:relative;width:44px;height:44px;flex-shrink:0;}
 .pr svg{width:44px;height:44px;transform:rotate(-90deg);}
 .pn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;}
 .emeta{flex:1;min-width:0;}
 .en{font-weight:700;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.es{font-size:12px;color:var(--t2);margin-top:2px;}
-.dl-chip{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;margin-top:4px;margin-right:3px;}
-.dl-ok{background:var(--teal-l);color:var(--teal);}
-.dl-warn{background:var(--amber-l);color:var(--amber-m);}
-.dl-over{background:var(--red-l);color:var(--red);}
+.es{font-size:12px;color:var(–t2);margin-top:2px;}
+.ecat-tag{display:inline-block;font-size:10px;font-weight:700;padding:1px 8px;border-radius:6px;margin-bottom:3px;}
+.tag-med{background:var(–teal-l);color:var(–teal);}
+.tag-corp{background:var(–blue-l);color:var(–blue);}
+.tag-collab{background:var(–purple-l);color:var(–purple);}
+.tag-gs{background:var(–coral-l);color:var(–coral);}
+.dl-chip{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:7px;margin-top:3px;margin-right:3px;}
+.dl-ok{background:var(–teal-l);color:var(–teal);}
+.dl-warn{background:var(–amber-l);color:var(–amber-m);}
+.dl-over{background:var(–red-l);color:var(–red);}
 .ebs{display:flex;flex-wrap:wrap;gap:4px;flex-shrink:0;max-width:115px;justify-content:flex-end;}
 .badge{padding:2px 7px;border-radius:8px;font-size:10px;font-weight:600;white-space:nowrap;}
-.bok{background:var(--teal-l);color:var(--teal);}
-.bwarn{background:var(--amber-l);color:var(--amber-m);}
-.binfo{background:var(--blue-l);color:var(--blue);}
-.bgray{background:var(--gray-l);color:var(--gray);}
-.chv{font-size:11px;color:var(--t3);flex-shrink:0;transition:transform .15s;margin-left:4px;}
+.bok{background:var(–teal-l);color:var(–teal);}
+.bwarn{background:var(–amber-l);color:var(–amber-m);}
+.binfo{background:var(–blue-l);color:var(–blue);}
+.bgray{background:var(–gray-l);color:var(–gray);}
+.bpurple{background:var(–purple-l);color:var(–purple);}
+.bcoral{background:var(–coral-l);color:var(–coral);}
+.chv{font-size:11px;color:var(–t3);flex-shrink:0;transition:transform .15s;margin-left:4px;}
 .ecard.open .chv{transform:rotate(180deg);}
-.edetail{border-top:1px solid var(--border);}
-.etabs{display:flex;border-bottom:1px solid var(--border);overflow-x:auto;}
+
+/* ── Tabs ── */
+.edetail{border-top:1px solid var(–border);}
+.etabs{display:flex;border-bottom:1px solid var(–border);overflow-x:auto;}
 .etabs::-webkit-scrollbar{display:none;}
-.etab{padding:10px 14px;font-size:12px;cursor:pointer;border-bottom:2px solid transparent;color:var(--t2);white-space:nowrap;flex-shrink:0;background:none;border-top:none;border-left:none;border-right:none;}
-.etab.act{color:var(--teal);border-bottom-color:var(--teal);font-weight:600;}
+.etab{padding:10px 14px;font-size:12px;cursor:pointer;border-bottom:2px solid transparent;color:var(–t2);white-space:nowrap;flex-shrink:0;background:none;border-top:none;border-left:none;border-right:none;}
+.etab.act{color:var(–teal);border-bottom-color:var(–teal);font-weight:600;}
+.etab.act-blue{color:var(–blue);border-bottom-color:var(–blue);font-weight:600;}
+.etab.act-purple{color:var(–purple);border-bottom-color:var(–purple);font-weight:600;}
+.etab.act-coral{color:var(–coral-m);border-bottom-color:var(–coral-m);font-weight:600;}
 .tab-body{padding:16px;}
-/* Info tab */
-.info-banner{background:var(--teal);color:#fff;border-radius:var(--rad-m);padding:16px;margin-bottom:14px;}
+
+/* ── Info banner ── */
+.info-banner{border-radius:var(–rad-m);padding:16px;margin-bottom:14px;color:#fff;}
+.bann-med{background:var(–teal);}
+.bann-corp{background:var(–blue);}
+.bann-collab{background:var(–purple);}
+.bann-gs{background:var(–coral-m);}
 .info-ev-name{font-size:15px;font-weight:700;margin-bottom:10px;line-height:1.3;}
-.info-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:13px;}
-.info-row:last-of-type{margin-bottom:0;}
-.info-icon{width:18px;text-align:center;font-size:13px;}
+.info-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;font-size:13px;}
+.info-icon{width:18px;text-align:center;font-size:13px;flex-shrink:0;margin-top:1px;}
 .info-edit-btn{background:rgba(255,255,255,0.2);color:#fff;border:none;padding:7px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-weight:600;margin-top:12px;width:100%;}
-.info-edit-form{background:var(--bg);border-radius:var(--rad-m);padding:14px;margin-bottom:14px;border:1px solid var(--border);}
+.info-edit-form{background:var(–bg);border-radius:var(–rad-m);padding:14px;margin-bottom:14px;border:1px solid var(–border);}
 .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
-.icard{background:var(--bg);border-radius:var(--rad-s);padding:10px 12px;}
-.icard-lbl{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;}
-.icard-val{font-size:22px;font-weight:700;}
+.icard{background:var(–bg);border-radius:var(–rad-s);padding:10px 12px;}
+.icard-lbl{font-size:10px;color:var(–t3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;}
+.icard-val{font-size:20px;font-weight:700;}
 .phys-row-cnt{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
-.pcnt{flex:1;min-width:70px;background:var(--bg);border-radius:var(--rad-s);padding:10px 12px;text-align:center;}
+.pcnt{flex:1;min-width:70px;background:var(–bg);border-radius:var(–rad-s);padding:10px 12px;text-align:center;}
 .pcnt-n{font-size:20px;font-weight:700;}
-.pcnt-l{font-size:10px;color:var(--t2);margin-top:2px;}
-/* Checklist */
-.stit{font-size:11px;font-weight:700;color:var(--t2);letter-spacing:.06em;text-transform:uppercase;margin:16px 0 8px;display:flex;align-items:center;gap:8px;}
+.pcnt-l{font-size:10px;color:var(–t2);margin-top:2px;}
+
+/* ── Checklist ── */
+.stit{font-size:11px;font-weight:700;color:var(–t2);letter-spacing:.06em;text-transform:uppercase;margin:16px 0 8px;display:flex;align-items:center;gap:8px;}
 .stit:first-child{margin-top:0;}
-.spg{font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--t3);}
-.ci{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--bord2);}
+.spg{font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;color:var(–t3);}
+.ci{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(–bord2);}
 .ci:last-child{border-bottom:none;}
-.ci input[type=checkbox]{flex-shrink:0;width:18px;height:18px;cursor:pointer;accent-color:var(--teal);}
+.ci input[type=checkbox]{flex-shrink:0;width:18px;height:18px;cursor:pointer;accent-color:var(–teal);}
 .cilbl{flex:1;font-size:13px;cursor:pointer;line-height:1.4;}
-.ci.done .cilbl{color:var(--t3);text-decoration:line-through;}
-.ctag{font-size:10px;padding:1px 7px;border-radius:6px;background:var(--amber-l);color:var(--amber-m);flex-shrink:0;font-weight:600;}
-/* Physician tab */
+.ci.done .cilbl{color:var(–t3);text-decoration:line-through;}
+.ctag{font-size:10px;padding:1px 7px;border-radius:6px;background:var(–amber-l);color:var(–amber-m);flex-shrink:0;font-weight:600;}
+
+/* ── Physicians / Targets ── */
 .phys-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:12px;}
-.pstat{background:var(--bg);border-radius:var(--rad-s);padding:8px 10px;text-align:center;}
+.pstat{background:var(–bg);border-radius:var(–rad-s);padding:8px 10px;text-align:center;}
 .pstat-n{font-size:18px;font-weight:700;}
-.pstat-l{font-size:10px;color:var(--t2);margin-top:1px;}
-.rsvp-bar{background:var(--teal-ll);border:1px solid var(--teal-l);border-radius:var(--rad-s);padding:8px 12px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;font-size:12px;}
-.rsvp-bar b{color:var(--teal);}
-.pr-row{background:var(--bg);border-radius:var(--rad-s);padding:10px 12px;display:flex;align-items:center;gap:10px;margin-bottom:8px;}
-.av{width:34px;height:34px;border-radius:50%;background:var(--teal-l);color:var(--teal);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;}
+.pstat-l{font-size:10px;color:var(–t2);margin-top:1px;}
+.rsvp-bar{background:var(–teal-ll);border:1px solid var(–teal-l);border-radius:var(–rad-s);padding:8px 12px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;font-size:12px;}
+.rsvp-bar b{color:var(–teal);}
+.pr-row{background:var(–bg);border-radius:var(–rad-s);padding:10px 12px;display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;background:var(–teal-l);color:var(–teal);}
 .pr-info{flex:1;min-width:0;}
 .pr-name{font-size:13px;font-weight:600;}
-.pr-sub{font-size:11px;color:var(--t2);margin-top:2px;}
-.pr-dl{font-size:10px;color:var(--t3);margin-top:1px;}
+.pr-sub{font-size:11px;color:var(–t2);margin-top:2px;}
+.pr-dl{font-size:10px;color:var(–t3);margin-top:1px;}
 .status-btn{padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;cursor:pointer;border:none;white-space:nowrap;}
-.pr-del{background:none;border:none;color:var(--t3);cursor:pointer;font-size:18px;padding:4px;line-height:1;}
-.s-waiting{background:var(--gray-l);color:var(--gray);}
-.s-invited{background:var(--blue-l);color:var(--blue);}
-.s-confirmed{background:var(--teal-l);color:var(--teal);}
-.s-declined{background:var(--red-l);color:var(--red);}
-.dash-btn{width:100%;padding:10px;border:1px dashed var(--border);border-radius:var(--rad-s);background:none;cursor:pointer;color:var(--teal);font-size:13px;font-weight:600;}
-/* Agenda tab */
+.pr-del{background:none;border:none;color:var(–t3);cursor:pointer;font-size:18px;padding:4px;line-height:1;}
+.s-waiting{background:var(–gray-l);color:var(–gray);}
+.s-invited{background:var(–blue-l);color:var(–blue);}
+.s-confirmed{background:var(–teal-l);color:var(–teal);}
+.s-declined{background:var(–red-l);color:var(–red);}
+/* GS statuses */
+.s-visited{background:var(–blue-l);color:var(–blue);}
+.s-interested{background:var(–teal-l);color:var(–teal);}
+.s-prescribing{background:#EAF3DE;color:#3B6D11;}
+.s-followup{background:var(–amber-l);color:var(–amber-m);}
+.s-rejected{background:var(–red-l);color:var(–red);}
+
+.dash-btn{width:100%;padding:10px;border:1px dashed var(–border);border-radius:var(–rad-s);background:none;cursor:pointer;color:var(–teal);font-size:13px;font-weight:600;}
+
+/* ── Agenda ── */
 .ag-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
-.ag-info{font-size:12px;color:var(--t2);}
-.ag-item{background:var(--bg);border-radius:var(--rad-s);padding:10px 12px;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px;}
+.ag-info{font-size:12px;color:var(–t2);}
+.ag-item{background:var(–bg);border-radius:var(–rad-s);padding:10px 12px;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px;}
 .ag-tc{flex-shrink:0;width:88px;}
-.ag-time{font-size:13px;font-weight:700;color:var(--teal);}
-.ag-dur{font-size:10px;color:var(--t3);margin-top:2px;}
+.ag-time{font-size:13px;font-weight:700;color:var(–teal);line-height:1.4;}
+.ag-dur{font-size:10px;color:var(–t3);margin-top:2px;}
 .ag-body{flex:1;min-width:0;}
 .ag-badge{display:inline-block;font-size:10px;font-weight:600;padding:1px 7px;border-radius:6px;margin-bottom:4px;}
 .ag-topic{font-size:13px;font-weight:600;line-height:1.3;}
-.ag-spk{font-size:11px;color:var(--t2);margin-top:3px;}
-.ag-del{background:none;border:none;color:var(--t3);cursor:pointer;font-size:16px;padding:2px 4px;line-height:1;}
+.ag-spk{font-size:11px;color:var(–t2);margin-top:3px;}
+.ag-del{background:none;border:none;color:var(–t3);cursor:pointer;font-size:16px;padding:2px 4px;line-height:1;}
 .type-開場{background:#E6F1FB;color:#185FA5;}
-.type-演講{background:var(--teal-l);color:var(--teal);}
-.type-討論{background:#FAEEDA;color:#854F0B;}
-.type-QA{background:var(--gray-l);color:var(--gray);}
-.type-休息{background:var(--gray-l);color:var(--t3);}
-.type-閉幕{background:var(--teal-l);color:var(--teal);}
-.type-其他{background:var(--gray-l);color:var(--gray);}
-.btn-print{background:var(--blue-l);color:var(--blue);border:1px solid var(--blue-l);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;}
-/* Forms */
+.type-演講{background:var(–teal-l);color:var(–teal);}
+.type-討論{background:var(–amber-l);color:var(–amber-m);}
+.type-QA{background:var(–gray-l);color:var(–gray);}
+.type-休息{background:var(–gray-l);color:var(–t3);}
+.type-閉幕{background:var(–teal-l);color:var(–teal);}
+.type-其他{background:var(–gray-l);color:var(–gray);}
+
+/* ── Notes tab ── */
+.notes-area{width:100%;min-height:140px;padding:10px;font-size:13px;line-height:1.6;border:1px solid var(–border);border-radius:var(–rad-s);background:var(–bg);color:var(–text);resize:vertical;font-family:inherit;}
+.notes-area:focus{outline:none;border-color:var(–teal);}
+.notes-save{margin-top:8px;display:flex;justify-content:flex-end;}
+
+/* ── Forms ── */
 .fg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
 .ff{display:flex;flex-direction:column;gap:3px;}
-.ff label{font-size:11px;color:var(--t2);font-weight:500;}
-.ff input,.ff select,.ff textarea{font-size:13px;padding:7px 10px;border:1px solid var(--border);border-radius:6px;background:var(--card);color:var(--text);width:100%;}
-.ff input:focus,.ff select:focus{outline:none;border-color:var(--teal);}
+.ff label{font-size:11px;color:var(–t2);font-weight:500;}
+.ff input,.ff select,.ff textarea{font-size:13px;padding:7px 10px;border:1px solid var(–border);border-radius:6px;background:var(–card);color:var(–text);width:100%;}
+.ff input:focus,.ff select:focus,.ff textarea:focus{outline:none;border-color:var(–teal);}
 .full{grid-column:1/-1;}
 .form-acts{display:flex;gap:8px;justify-content:flex-end;}
-.btn{padding:7px 16px;border-radius:8px;font-size:13px;cursor:pointer;border:1px solid var(--border);background:var(--card);color:var(--text);}
-.btn-teal{background:var(--teal);color:#fff;border-color:var(--teal);}
+.btn{padding:7px 16px;border-radius:8px;font-size:13px;cursor:pointer;border:1px solid var(–border);background:var(–card);color:var(–text);}
+.btn-teal{background:var(–teal);color:#fff;border-color:var(–teal);}
 .btn-sm{padding:5px 12px;font-size:12px;}
-.add-form-box{background:var(--bg);border-radius:var(--rad-s);padding:12px;border:1px solid var(--border);margin-top:8px;}
+.btn-print{background:var(–blue-l);color:var(–blue);border:1px solid var(–blue-l);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;}
+.add-form-box{background:var(–bg);border-radius:var(–rad-s);padding:12px;border:1px solid var(–border);margin-top:8px;}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200;display:flex;align-items:flex-end;justify-content:center;}
-.modal{background:var(--card);border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:720px;max-height:88vh;overflow-y:auto;}
-.modal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.modal{background:var(–card);border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:720px;max-height:92vh;overflow-y:auto;}
+.modal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
 .modal-ttl{font-size:17px;font-weight:700;}
-.modal-close{background:none;border:none;font-size:22px;color:var(--t3);cursor:pointer;padding:0 4px;}
-.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.modal-close{background:none;border:none;font-size:22px;color:var(–t3);cursor:pointer;padding:0 4px;}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
 .modal-foot{display:flex;gap:10px;}
 .btn-full{flex:1;padding:14px;border-radius:12px;font-size:15px;cursor:pointer;border:none;font-weight:600;}
-.detfoot{display:flex;justify-content:space-between;align-items:center;padding-top:12px;margin-top:12px;border-top:1px solid var(--border);}
-.detfoot-info{font-size:12px;color:var(--t2);}
-.btn-danger{color:var(--red);background:none;border:1px solid var(--border);padding:6px 14px;border-radius:8px;font-size:12px;cursor:pointer;}
+/* Category selector */
+.cat-select{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px;}
+.cat-opt{padding:10px 12px;border-radius:var(–rad-m);border:2px solid var(–border);cursor:pointer;text-align:center;user-select:none;}
+.cat-opt .co-icon{font-size:22px;margin-bottom:4px;}
+.cat-opt .co-name{font-size:13px;font-weight:600;}
+.cat-opt .co-sub{font-size:10px;color:var(–t2);margin-top:1px;}
+.cat-opt.sel-med{border-color:var(–teal);background:var(–teal-ll);}
+.cat-opt.sel-corp{border-color:var(–blue-m);background:var(–blue-l);}
+.cat-opt.sel-collab{border-color:var(–purple-m);background:var(–purple-l);}
+.cat-opt.sel-gs{border-color:var(–coral-m);background:var(–coral-l);}
+.detfoot{display:flex;justify-content:space-between;align-items:center;padding-top:12px;margin-top:12px;border-top:1px solid var(–border);}
+.detfoot-info{font-size:12px;color:var(–t2);}
+.btn-danger{color:var(–red);background:none;border:1px solid var(–border);padding:6px 14px;border-radius:8px;font-size:12px;cursor:pointer;}
 @media(max-width:500px){
-  .stats{grid-template-columns:repeat(2,1fr);}
-  .modal-grid{grid-template-columns:1fr;}
-  .ebs{max-width:90px;}
-  .ag-tc{width:72px;}
+.stats{grid-template-columns:repeat(2,1fr);}
+.modal-grid{grid-template-columns:1fr;}
+.ebs{max-width:90px;}
+.ag-tc{width:72px;}
 }
 </style>
+
 </head>
 <body>
 <div id="app"></div>
 <script>
-const TMPL=[
-  {cat:'基本設定',items:[
-    {id:'b1',label:'確認活動類型與主題',c:false},
-    {id:'b2',label:'確認日期、時間、場地',c:false},
-    {id:'b3',label:'確認預算 (含 Compliance 金額上限)',c:true},
-  ]},
-  {cat:'邀請醫師',items:[
-    {id:'d1',label:'建立邀請名單',c:false},
-    {id:'d2',label:'發出邀請函 / 邀請電話',c:false},
-    {id:'d3',label:'確認出席回覆 (RSVP)',c:false},
-    {id:'d4',label:'寄送 Agenda 與活動說明資料',c:false},
-  ]},
-  {cat:'講師安排',items:[
-    {id:'s1',label:'確認講師姓名與資格',c:true},
-    {id:'s2',label:'確認演講題目',c:false},
-    {id:'s3',label:'收到簡報初稿',c:false},
-    {id:'s4',label:'Compliance 審查簡報內容',c:true},
-    {id:'s5',label:'確認講師費符合 FMV',c:true},
-    {id:'s6',label:'簽署講師合約 / 同意書',c:true},
-  ]},
-  {cat:'主持人',items:[
-    {id:'m1',label:'確認主持人',c:false},
-    {id:'m2',label:'確認主持人費用符合 FMV',c:true},
-    {id:'m3',label:'寄送主持流程與重點',c:false},
-  ]},
-  {cat:'餐飲安排',items:[
-    {id:'c1',label:'確認餐飲方式 (餐廳 / 便當)',c:false},
-    {id:'c2',label:'確認每人費用符合 Compliance 上限',c:true},
-    {id:'c3',label:'完成訂餐 / 訂位',c:false},
-    {id:'c4',label:'確認份數與特殊餐飲需求',c:false},
-  ]},
-  {cat:'VEM',items:[
-    {id:'v1',label:'開啟 VEM 活動 (Open Event)',c:false},
-    {id:'v2',label:'上傳邀請名單至 VEM',c:false},
-    {id:'v3',label:'確認 VEM 簽到功能設定',c:false},
-    {id:'v4',label:'活動當天確認 VEM 簽到',c:false},
-    {id:'v5',label:'活動結束後關閉 VEM (Close Event)',c:true},
-    {id:'v6',label:'確認出席名單已完整記錄',c:true},
-  ]},
-  {cat:'Work Order',items:[
-    {id:'w1',label:'申請 Work Order',c:false},
-    {id:'w2',label:'Work Order 核准確認',c:false},
-    {id:'w3',label:'記錄 WO 編號備查',c:false},
-  ]},
-  {cat:'Compliance 後續',items:[
-    {id:'cp1',label:'出席名單回傳 / 歸檔',c:true},
-    {id:'cp2',label:'費用報銷單據整理',c:true},
-    {id:'cp3',label:'活動紀錄 / 照片 / 議程存檔',c:true},
-    {id:'cp4',label:'Transfer of Value (TOV) 記錄更新',c:true},
-  ]},
-];
-
-const STATUSES=['待邀請','已邀請/待回覆','確認出席','婉拒'];
-const SCLS={'待邀請':'s-waiting','已邀請/待回覆':'s-invited','確認出席':'s-confirmed','婉拒':'s-declined'};
-const HOSPITALS=['亞東醫院','和信醫院','輔大醫院','土城長庚'];
-const TYPES=['Advisory Board','Investigator Meeting','Satellite Symposium','CME/CPD 講座','Product Launch','Round Table'];
-const AG_TYPES=['開場','演講','討論','Q&A','休息','閉幕','其他'];
-
-function mkCL(){return TMPL.map(cat=>({cat:cat.cat,items:cat.items.map(i=>({...i,done:false}))}));}
-function prog(ev){const a=ev.checklist.flatMap(c=>c.items),d=a.filter(i=>i.done).length;return{done:d,total:a.length,pct:Math.round(d/a.length*100)};}
-function hasCA(ev){return ev.checklist.flatMap(c=>c.items).some(i=>i.c&&!i.done);}
-function daysTo(s){if(!s)return null;const d=new Date(s),t=new Date();t.setHours(0,0,0,0);d.setHours(0,0,0,0);return Math.round((d-t)/86400000);}
-function physStats(ev){const p=ev.physicians||[];return{total:p.length,confirmed:p.filter(x=>x.status==='確認出席').length,noResp:p.filter(x=>x.status==='已邀請/待回覆').length,declined:p.filter(x=>x.status==='婉拒').length,waiting:p.filter(x=>x.status==='待邀請').length};}
-function agDur(t1,t2){if(!t1||!t2)return'';const[h1,m1]=t1.split(':').map(Number),[h2,m2]=t2.split(':').map(Number);const min=(h2*60+m2)-(h1*60+m1);return min>0?min+'分':'';}
-function todayStr(){return new Date().toISOString().slice(0,10);}
-function dlChip(days,lbl){if(days===null)return'';const cls=days<0?'dl-over':days<=3?'dl-warn':'dl-ok';const txt=days<0?`已過${-days}天`:days===0?'今天截止':`剩${days}天`;return`<span class="dl-chip ${cls}">${lbl}：${txt}</span>`;}
-
-function mkSample(){
-  const mk=(doneMap)=>{const cl=mkCL();Object.entries(doneMap).forEach(([cat,ids])=>{const c=cl.find(x=>x.cat===cat);if(c)ids.forEach(id=>{const i=c.items.find(x=>x.id===id);if(i)i.done=true;});});return cl;};
-  return[
-    {id:1,name:'亞東 Abemaciclib Advisory Board Q2',date:'2026-04-22',startTime:'14:00',endTime:'17:00',rsvpDeadline:'2026-04-16',hospital:'亞東醫院',type:'Advisory Board',venue:'教研大樓 3F 會議室',
-      checklist:mk({'基本設定':['b1','b2','b3'],'邀請醫師':['d1','d2'],'講師安排':['s1','s2'],'VEM':['v1','v2','v3'],'Work Order':['w1','w2','w3']}),
-      physicians:[
-        {id:1,name:'張○○醫師',title:'主治醫師',dept:'血液腫瘤科',status:'確認出席',invitedDate:'2026-04-01',rsvpDl:'2026-04-16'},
-        {id:2,name:'李○○醫師',title:'主治醫師',dept:'血液腫瘤科',status:'已邀請/待回覆',invitedDate:'2026-04-03',rsvpDl:'2026-04-16'},
-        {id:3,name:'王○○醫師',title:'主治醫師',dept:'乳房外科',status:'婉拒',invitedDate:'2026-04-01',rsvpDl:'2026-04-16'},
-        {id:4,name:'陳○○醫師',title:'主任',dept:'血液腫瘤科',status:'確認出席',invitedDate:'2026-04-02',rsvpDl:'2026-04-16'},
-      ],
-      agenda:[
-        {id:1,startTime:'14:00',endTime:'14:10',type:'開場',topic:'開幕致詞與來賓介紹',speaker:'主持人'},
-        {id:2,startTime:'14:10',endTime:'14:50',type:'演講',topic:'HR+/HER2- Advanced BC 治療策略更新',speaker:'張○○醫師'},
-        {id:3,startTime:'14:50',endTime:'15:30',type:'演講',topic:'Abemaciclib 最新臨床證據與實務應用',speaker:'陳○○醫師'},
-        {id:4,startTime:'15:30',endTime:'15:45',type:'休息',topic:'中場休息 / 茶點',speaker:''},
-        {id:5,startTime:'15:45',endTime:'16:30',type:'討論',topic:'Case Discussion：臨床情境與用藥決策',speaker:'全體與會者'},
-        {id:6,startTime:'16:30',endTime:'17:00',type:'Q&A',topic:'問答與綜合討論',speaker:'主持人'},
-      ]
-    },
-    {id:2,name:'和信 Early BC Satellite Symposium',date:'2026-05-17',startTime:'13:00',endTime:'15:00',rsvpDeadline:'2026-05-10',hospital:'和信醫院',type:'Satellite Symposium',venue:'醫學中心 B1 演講廳',
-      checklist:mk({'基本設定':['b1','b2']}),
-      physicians:[{id:5,name:'吳○○醫師',title:'主治醫師',dept:'腫瘤科',status:'待邀請',invitedDate:'',rsvpDl:'2026-05-10'}],
-      agenda:[]
-    },
-    {id:3,name:'土城長庚 HR+ Investigator Meeting',date:'2026-04-05',startTime:'17:30',endTime:'19:30',rsvpDeadline:'',hospital:'土城長庚',type:'Investigator Meeting',venue:'研究大樓 B1 會議室',
-      checklist:mk({'基本設定':['b1','b2','b3'],'邀請醫師':['d1','d2','d3','d4'],'講師安排':['s1','s2','s3','s4','s5','s6'],'主持人':['m1','m2','m3'],'餐飲安排':['c1','c2','c3','c4'],'VEM':['v1','v2','v3','v4','v5','v6'],'Work Order':['w1','w2','w3'],'Compliance 後續':['cp1','cp2','cp3','cp4']}),
-      physicians:[
-        {id:6,name:'黃○○醫師',title:'主治醫師',dept:'腫瘤科',status:'確認出席',invitedDate:'2026-03-20',rsvpDl:''},
-        {id:7,name:'林○○醫師',title:'主治醫師',dept:'血腫科',status:'確認出席',invitedDate:'2026-03-20',rsvpDl:''},
-      ],
-      agenda:[
-        {id:1,startTime:'17:30',endTime:'17:35',type:'開場',topic:'開場致詞',speaker:'主持人'},
-        {id:2,startTime:'17:35',endTime:'18:15',type:'演講',topic:'Monarchs 研究解析與臨床轉譯',speaker:'黃○○醫師'},
-        {id:3,startTime:'18:15',endTime:'18:55',type:'討論',topic:'病例討論與治療策略',speaker:'全體'},
-        {id:4,startTime:'18:55',endTime:'19:00',type:'閉幕',topic:'總結與致謝',speaker:'主持人'},
-      ]
-    },
-    {id:4,name:'輔大 Round Table Discussion',date:'2026-05-28',startTime:'12:00',endTime:'14:00',rsvpDeadline:'2026-05-20',hospital:'輔大醫院',type:'Round Table',venue:'學術中心 4F',
-      checklist:mk({'基本設定':['b1']}),physicians:[],agenda:[]
-    },
-  ];
-}
-
-let nid=10,npid=20,nagid=50;
-function load(){try{const s=localStorage.getItem('pharma-em-v4');if(s)return JSON.parse(s);}catch(e){}return null;}
-function save(){try{localStorage.setItem('pharma-em-v4',JSON.stringify(S.events));}catch(e){}}
-
-let S={
-  events:load()||mkSample(),
-  filter:'全部',openId:null,tab:{},
-  showForm:false,showAddPhys:{},showAddAg:{},showEditInfo:{},
-  form:{name:'',date:'',startTime:'',endTime:'',rsvpDeadline:'',hospital:'亞東醫院',type:'Advisory Board',venue:''},
-  physForm:{},agForm:{},
+// ── Category definitions ──
+const CATS={
+  med:{key:'med',name:'自辦醫學活動',short:'醫學活動',tagCls:'tag-med',cardCls:'ecard-med',bannCls:'bann-med',accentColor:'#0F6E56'},
+  corp:{key:'corp',name:'公司活動',short:'公司活動',tagCls:'tag-corp',cardCls:'ecard-corp',bannCls:'bann-corp',accentColor:'#185FA5'},
+  collab:{key:'collab',name:'同事活動',short:'同事活動',tagCls:'tag-collab',cardCls:'ecard-collab',bannCls:'bann-collab',accentColor:'#3C3489'},
+  gs:{key:'gs',name:'Group Selling',short:'Group Selling',tagCls:'tag-gs',cardCls:'ecard-gs',bannCls:'bann-gs',accentColor:'#D85A30'},
 };
 
-function ring(pct){
-  const r=17,circ=+(2*Math.PI*r).toFixed(2),off=+(circ*(1-pct/100)).toFixed(2);
-  const col=pct===100?'#1D9E75':pct>60?'#185FA5':'#BA7517';
-  const bg=pct===100?'#9FE1CB':pct>60?'#B5D4F4':'#FAC775';
-  return`<div class="pr"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="${r}" fill="none" stroke="${bg}" stroke-width="3.5"/><circle cx="20" cy="20" r="${r}" fill="none" stroke="${col}" stroke-width="3.5" stroke-dasharray="${circ}" stroke-dashoffset="${off}" stroke-linecap="round"/></svg><div class="pn" style="color:${col}">${pct}%</div></div>`;
+// ── Checklist templates per category ──
+const TMPL_MED=[
+{cat:‘基本設定’,items:[
+{id:‘b1’,label:‘確認活動類型與主題’,c:false},
+{id:‘b2’,label:‘確認日期、時間、場地’,c:false},
+{id:‘b3’,label:‘確認預算（含 Compliance 金額上限）’,c:true},
+]},
+{cat:‘邀請醫師’,items:[
+{id:‘d1’,label:‘建立邀請名單’,c:false},
+{id:‘d2’,label:‘發出邀請函 / 電話邀請’,c:false},
+{id:‘d3’,label:‘確認出席回覆 (RSVP)’,c:false},
+{id:‘d4’,label:‘寄送 Agenda 與活動說明資料’,c:false},
+]},
+{cat:‘講師安排’,items:[
+{id:‘s1’,label:‘確認講師姓名與資格’,c:true},
+{id:‘s2’,label:‘確認演講題目’,c:false},
+{id:‘s3’,label:‘收到簡報初稿’,c:false},
+{id:‘s4’,label:‘Compliance 審查簡報內容’,c:true},
+{id:‘s5’,label:‘確認講師費符合 FMV’,c:true},
+{id:‘s6’,label:‘簽署講師合約 / 同意書’,c:true},
+]},
+{cat:‘主持人’,items:[
+{id:‘m1’,label:‘確認主持人’,c:false},
+{id:‘m2’,label:‘確認主持人費用符合 FMV’,c:true},
+{id:‘m3’,label:‘寄送主持流程與重點’,c:false},
+]},
+{cat:‘餐飲安排’,items:[
+{id:‘c1’,label:‘確認餐飲方式（餐廳 / 便當）’,c:false},
+{id:‘c2’,label:‘確認每人費用符合 Compliance 上限’,c:true},
+{id:‘c3’,label:‘完成訂餐 / 訂位’,c:false},
+{id:‘c4’,label:‘確認份數與特殊飲食需求’,c:false},
+]},
+{cat:‘VEM’,items:[
+{id:‘v1’,label:‘開啟 VEM 活動 (Open Event)’,c:false},
+{id:‘v2’,label:‘上傳邀請名單至 VEM’,c:false},
+{id:‘v3’,label:‘確認 VEM 簽到功能設定’,c:false},
+{id:‘v4’,label:‘活動當天確認 VEM 簽到’,c:false},
+{id:‘v5’,label:‘活動結束後關閉 VEM (Close Event)’,c:true},
+{id:‘v6’,label:‘確認出席名單已完整記錄’,c:true},
+]},
+{cat:‘Work Order’,items:[
+{id:‘w1’,label:‘申請 Work Order’,c:false},
+{id:‘w2’,label:‘Work Order 核准確認’,c:false},
+{id:‘w3’,label:‘記錄 WO 編號備查’,c:false},
+]},
+{cat:‘Compliance 後續’,items:[
+{id:‘cp1’,label:‘出席名單回傳 / 歸檔’,c:true},
+{id:‘cp2’,label:‘費用報銷單據整理’,c:true},
+{id:‘cp3’,label:‘活動紀錄 / 照片 / 議程存檔’,c:true},
+{id:‘cp4’,label:‘Transfer of Value (TOV) 記錄更新’,c:true},
+]},
+];
+
+const TMPL_CORP=[
+{cat:‘活動確認’,items:[
+{id:‘ca1’,label:‘確認活動日期、時間、地點’,c:false},
+{id:‘ca2’,label:‘確認主辦部門與聯絡窗口’,c:false},
+{id:‘ca3’,label:‘確認自己的任務分工’,c:false},
+{id:‘ca4’,label:‘確認受邀醫師名單（自己負責的部分）’,c:false},
+]},
+{cat:‘邀請與出席追蹤’,items:[
+{id:‘ca5’,label:‘完成醫師邀請（電話 / 信件）’,c:false},
+{id:‘ca6’,label:‘確認出席回覆’,c:false},
+{id:‘ca7’,label:‘活動當天協助報到 / 接待’,c:false},
+{id:‘ca8’,label:‘記錄實際出席名單’,c:true},
+]},
+{cat:‘活動後追蹤’,items:[
+{id:‘ca9’,label:‘活動後拜訪 / follow-up’,c:false},
+{id:‘ca10’,label:‘回報出席情況給主管 / 部門’,c:false},
+{id:‘ca11’,label:‘更新 CRM / call report’,c:false},
+]},
+];
+
+const TMPL_COLLAB=[
+{cat:‘確認活動細節’,items:[
+{id:‘co1’,label:‘確認活動日期、時間、地點’,c:false},
+{id:‘co2’,label:‘確認主辦同事與分工內容’,c:false},
+{id:‘co3’,label:‘確認自己負責邀請的醫師名單’,c:false},
+]},
+{cat:‘邀請與準備’,items:[
+{id:‘co4’,label:‘完成負責醫師的邀請’,c:false},
+{id:‘co5’,label:‘確認邀請醫師的出席狀況’,c:false},
+{id:‘co6’,label:‘準備需要的資料 / 物品’,c:false},
+]},
+{cat:‘活動當天與後續’,items:[
+{id:‘co7’,label:‘活動當天支援協助’,c:false},
+{id:‘co8’,label:‘協助整理出席名單’,c:true},
+{id:‘co9’,label:‘活動後對負責醫師 follow-up’,c:false},
+]},
+];
+
+const TMPL_GS=[
+{cat:‘拜訪準備’,items:[
+{id:‘gs1’,label:‘確認目標醫師名單’,c:false},
+{id:‘gs2’,label:‘確認拜訪日期、時間、地點’,c:false},
+{id:‘gs3’,label:‘準備簡報與文獻資料’,c:false},
+{id:‘gs4’,label:‘確認 MSL / 講者安排（如需）’,c:false},
+{id:‘gs5’,label:‘申請 Work Order（如需）’,c:false},
+]},
+{cat:‘拜訪執行’,items:[
+{id:‘gs6’,label:‘完成 Group Selling 拜訪’,c:false},
+{id:‘gs7’,label:‘確認各醫師實際出席’,c:false},
+{id:‘gs8’,label:‘記錄每位醫師的問題與反應’,c:false},
+]},
+{cat:‘後續追蹤’,items:[
+{id:‘gs9’,label:‘整理拜訪紀錄’,c:false},
+{id:‘gs10’,label:‘各醫師個別 follow-up 計畫’,c:false},
+{id:‘gs11’,label:‘記錄於 CRM / call report’,c:false},
+]},
+];
+
+function getTmpl(cat){return{med:TMPL_MED,corp:TMPL_CORP,collab:TMPL_COLLAB,gs:TMPL_GS}[cat]||TMPL_MED;}
+function mkCL(cat){return getTmpl(cat).map(c=>({cat:c.cat,items:c.items.map(i=>({…i,done:false}))}));}
+function prog(ev){const a=ev.checklist.flatMap(c=>c.items),d=a.filter(i=>i.done).length;return{done:d,total:a.length,pct:a.length?Math.round(d/a.length*100):0};}
+function hasCA(ev){return ev.checklist.flatMap(c=>c.items).some(i=>i.c&&!i.done);}
+function daysTo(s){if(!s)return null;const d=new Date(s),t=new Date();t.setHours(0,0,0,0);d.setHours(0,0,0,0);return Math.round((d-t)/86400000);}
+function todayStr(){return new Date().toISOString().slice(0,10);}
+function dlChip(days,lbl){if(days===null)return’’;const cls=days<0?‘dl-over’:days<=3?‘dl-warn’:‘dl-ok’;const txt=days<0?`已過${-days}天`:days===0?‘今天截止’:`剩${days}天`;return`<span class="dl-chip ${cls}">${lbl}：${txt}</span>`;}
+function agDur(t1,t2){if(!t1||!t2)return’’;const[h1,m1]=t1.split(’:’).map(Number),[h2,m2]=t2.split(’:’).map(Number);const min=(h2*60+m2)-(h1*60+m1);return min>0?min+‘分’:’’;}
+
+const MED_STATUSES=[‘待邀請’,‘已邀請/待回覆’,‘確認出席’,‘婉拒’];
+const MED_SCLS={‘待邀請’:‘s-waiting’,‘已邀請/待回覆’:‘s-invited’,‘確認出席’:‘s-confirmed’,‘婉拒’:‘s-declined’};
+const GS_STATUSES=[‘目標拜訪’,‘已拜訪’,‘有處方意願’,‘開始處方’,‘需再追蹤’,‘拒絕’];
+const GS_SCLS={‘目標拜訪’:‘s-waiting’,‘已拜訪’:‘s-visited’,‘有處方意願’:‘s-interested’,‘開始處方’:‘s-prescribing’,‘需再追蹤’:‘s-followup’,‘拒絕’:‘s-rejected’};
+
+function getStatuses(ev){return ev.category===‘gs’?GS_STATUSES:MED_STATUSES;}
+function getScls(ev){return ev.category===‘gs’?GS_SCLS:MED_SCLS;}
+
+function physStats(ev){
+const p=ev.physicians||[];
+if(ev.category===‘gs’){
+return{total:p.length,confirmed:p.filter(x=>x.status===‘開始處方’).length,noResp:p.filter(x=>x.status===‘有處方意願’).length,declined:p.filter(x=>x.status===‘拒絕’).length,waiting:p.filter(x=>x.status===‘目標拜訪’).length,visited:p.filter(x=>x.status===‘已拜訪’).length};
+}
+return{total:p.length,confirmed:p.filter(x=>x.status===‘確認出席’).length,noResp:p.filter(x=>x.status===‘已邀請/待回覆’).length,declined:p.filter(x=>x.status===‘婉拒’).length,waiting:p.filter(x=>x.status===‘待邀請’).length};
 }
 
+const HOSPITALS=[‘亞東醫院’,‘和信醫院’,‘輔大醫院’,‘土城長庚’];
+const MED_TYPES=[‘Advisory Board’,‘Investigator Meeting’,‘Satellite Symposium’,‘CME/CPD 講座’,‘Product Launch’,‘Round Table’];
+const CORP_DEPTS=[‘Marketing’,‘Medical’];
+const AG_TYPES=[‘開場’,‘演講’,‘討論’,‘Q&A’,‘休息’,‘閉幕’,‘其他’];
+
+// ── Sample data ──
+function mkSample(){
+const mkd=(cat,doneMap)=>{const cl=mkCL(cat);Object.entries(doneMap).forEach(([c,ids])=>{const ct=cl.find(x=>x.cat===c);if(ct)ids.forEach(id=>{const i=ct.items.find(x=>x.id===id);if(i)i.done=true;});});return cl;};
+return[
+{id:1,category:‘med’,name:‘亞東 Abemaciclib Advisory Board Q2’,date:‘2026-04-22’,startTime:‘14:00’,endTime:‘17:00’,rsvpDeadline:‘2026-04-16’,hospital:‘亞東醫院’,subType:‘Advisory Board’,venue:‘教研大樓 3F 會議室’,notes:’’,
+checklist:mkd(‘med’,{‘基本設定’:[‘b1’,‘b2’,‘b3’],‘邀請醫師’:[‘d1’,‘d2’],‘講師安排’:[‘s1’,‘s2’],‘VEM’:[‘v1’,‘v2’,‘v3’],‘Work Order’:[‘w1’,‘w2’,‘w3’]}),
+physicians:[
+{id:1,name:‘張○○醫師’,title:‘主治醫師’,dept:‘血液腫瘤科’,status:‘確認出席’,invitedDate:‘2026-04-01’,rsvpDl:‘2026-04-16’},
+{id:2,name:‘李○○醫師’,title:‘主治醫師’,dept:‘血液腫瘤科’,status:‘已邀請/待回覆’,invitedDate:‘2026-04-03’,rsvpDl:‘2026-04-16’},
+{id:3,name:‘王○○醫師’,title:‘主治醫師’,dept:‘乳房外科’,status:‘婉拒’,invitedDate:‘2026-04-01’,rsvpDl:‘2026-04-16’},
+{id:4,name:‘陳○○醫師’,title:‘主任’,dept:‘血液腫瘤科’,status:‘確認出席’,invitedDate:‘2026-04-02’,rsvpDl:‘2026-04-16’},
+],
+agenda:[
+{id:1,startTime:‘14:00’,endTime:‘14:10’,type:‘開場’,topic:‘開幕致詞與來賓介紹’,speaker:‘主持人’},
+{id:2,startTime:‘14:10’,endTime:‘14:50’,type:‘演講’,topic:‘HR+/HER2- Advanced BC 治療策略更新’,speaker:‘張○○醫師’},
+{id:3,startTime:‘14:50’,endTime:‘15:30’,type:‘演講’,topic:‘Abemaciclib 最新臨床證據與實務應用’,speaker:‘陳○○醫師’},
+{id:4,startTime:‘15:30’,endTime:‘15:45’,type:‘休息’,topic:‘中場休息 / 茶點’,speaker:’’},
+{id:5,startTime:‘15:45’,endTime:‘16:30’,type:‘討論’,topic:‘Case Discussion：臨床情境與用藥決策’,speaker:‘全體與會者’},
+{id:6,startTime:‘16:30’,endTime:‘17:00’,type:‘Q&A’,topic:‘問答與綜合討論’,speaker:‘主持人’},
+]
+},
+{id:2,category:‘corp’,name:‘Q2 Marketing Breast Cancer Summit’,date:‘2026-05-08’,startTime:‘09:00’,endTime:‘17:00’,rsvpDeadline:‘2026-04-28’,hospital:‘亞東醫院’,subType:‘Marketing’,corpOrganizer:‘Marketing 部門’,yourRole:‘邀請負責醫師 / 現場協助’,venue:‘台北君悅酒店 3F’,notes:‘記得帶名片、活動 kit，場地登記聯絡人 Amy’,
+checklist:mkd(‘corp’,{‘活動確認’:[‘ca1’,‘ca2’,‘ca3’],‘邀請與出席追蹤’:[‘ca5’]}),
+physicians:[
+{id:8,name:‘林○○醫師’,title:‘主治醫師’,dept:‘血液腫瘤科’,status:‘確認出席’,invitedDate:‘2026-04-20’,rsvpDl:‘2026-04-28’},
+{id:9,name:‘吳○○醫師’,title:‘主治醫師’,dept:‘乳房外科’,status:‘已邀請/待回覆’,invitedDate:‘2026-04-21’,rsvpDl:‘2026-04-28’},
+],agenda:[]
+},
+{id:3,category:‘collab’,name:‘和信同事 Lee 的 Satellite Meeting 支援’,date:‘2026-05-17’,startTime:‘13:00’,endTime:‘15:00’,rsvpDeadline:’’,hospital:‘和信醫院’,subType:‘同事活動’,collabColleague:‘Lee（和信）’,yourRole:‘負責邀請血液腫瘤科醫師 3 位’,venue:‘醫學中心 B1 演講廳’,notes:‘Lee 說 9:00 到場佈置，記得帶便當訂單’,
+checklist:mkd(‘collab’,{‘確認活動細節’:[‘co1’,‘co2’,‘co3’]}),
+physicians:[
+{id:10,name:‘黃○○醫師’,title:‘主治醫師’,dept:‘血液腫瘤科’,status:‘確認出席’,invitedDate:‘2026-05-05’,rsvpDl:’’},
+{id:11,name:‘蔡○○醫師’,title:‘主治醫師’,dept:‘腫瘤科’,status:‘待邀請’,invitedDate:’’,rsvpDl:’’},
+],agenda:[]
+},
+{id:4,category:‘gs’,name:‘土城長庚 HR+ Group Selling — 血腫科 Q2’,date:‘2026-04-18’,startTime:‘12:00’,endTime:‘13:00’,rsvpDeadline:’’,hospital:‘土城長庚’,subType:‘Group Selling’,venue:‘醫師休息室 / 便當’,gsObjective:‘Abemaciclib 處方滲透率提升，針對目前尚未處方的醫師’,gsOutcome:‘進行中’,notes:‘準備 MONARCHE / MONARCH2 重點 slide 各一頁，便當請 5 個’,
+checklist:mkd(‘gs’,{‘拜訪準備’:[‘gs1’,‘gs2’,‘gs3’]}),
+physicians:[
+{id:12,name:‘鄭○○醫師’,title:‘主治醫師’,dept:‘血液腫瘤科’,status:‘有處方意願’,invitedDate:’’,rsvpDl:’’},
+{id:13,name:‘方○○醫師’,title:‘主治醫師’,dept:‘血液腫瘤科’,status:‘目標拜訪’,invitedDate:’’,rsvpDl:’’},
+{id:14,name:‘葉○○醫師’,title:‘主治醫師’,dept:‘血液腫瘤科’,status:‘開始處方’,invitedDate:’’,rsvpDl:’’},
+],agenda:[]
+},
+];
+}
+
+// ── State ──
+let nid=20,npid=30,nagid=60;
+function load(){try{const s=localStorage.getItem(‘pharma-em-v5’);if(s)return JSON.parse(s);}catch(e){}return null;}
+function save(){try{localStorage.setItem(‘pharma-em-v5’,JSON.stringify(S.events));}catch(e){}}
+
+let S={
+events:load()||mkSample(),
+filterCat:‘all’,filterHosp:‘全部’,
+openId:null,tab:{},
+showForm:false,formStep:1,
+form:{category:‘med’,name:’’,date:’’,startTime:’’,endTime:’’,rsvpDeadline:’’,hospital:‘亞東醫院’,subType:‘Advisory Board’,venue:’’,corpOrganizer:’’,corpDept:‘Marketing’,yourRole:’’,collabColleague:’’,gsObjective:’’,gsOutcome:‘進行中’,notes:’’},
+showAddPhys:{},showAddAg:{},showEditInfo:{},
+physForm:{},agForm:{},
+};
+
+// ── Render helpers ──
+function ring(pct,color){
+const r=17,circ=+(2*Math.PI*r).toFixed(2),off=+(circ*(1-pct/100)).toFixed(2);
+const c={teal:’#1D9E75’,blue:’#378ADD’,purple:’#7F77DD’,coral:’#D85A30’}[color]||’#1D9E75’;
+const bg={teal:’#9FE1CB’,blue:’#B5D4F4’,purple:’#AFA9EC’,coral:’#F0997B’}[color]||’#9FE1CB’;
+const stroke=pct>0?c:‘transparent’;
+return`<div class="pr"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="${r}" fill="none" stroke="${bg}" stroke-width="3.5"/><circle cx="20" cy="20" r="${r}" fill="none" stroke="${stroke}" stroke-width="3.5" stroke-dasharray="${circ}" stroke-dashoffset="${off}" stroke-linecap="round"/></svg><div class="pn" style="color:${c}">${pct}%</div></div>`;
+}
+const CAT_COLOR={med:‘teal’,corp:‘blue’,collab:‘purple’,gs:‘coral’};
+const CAT_ACT={med:‘act’,corp:‘act-blue’,collab:‘act-purple’,gs:‘act-coral’};
+
 function renderCard(ev){
-  const p=prog(ev),isOpen=S.openId===ev.id,ca=hasCA(ev);
-  const v1=ev.checklist.find(c=>c.cat==='VEM')?.items.find(i=>i.id==='v1')?.done;
-  const v5=ev.checklist.find(c=>c.cat==='VEM')?.items.find(i=>i.id==='v5')?.done;
-  const w2=ev.checklist.find(c=>c.cat==='Work Order')?.items.find(i=>i.id==='w2')?.done;
-  const ps=physStats(ev);
-  const dEvent=daysTo(ev.date),dRsvp=daysTo(ev.rsvpDeadline);
-  const timeStr=ev.startTime?(ev.startTime+(ev.endTime?' – '+ev.endTime:'')):'';
-  const vb=v5?`<span class="badge bok">VEM 已關</span>`:v1?`<span class="badge binfo">VEM 開啟</span>`:`<span class="badge bgray">VEM 未開</span>`;
-  const wb=w2?`<span class="badge bok">WO 核准</span>`:`<span class="badge bgray">WO 待核</span>`;
-  const cb=ca?`<span class="badge bwarn">Compliance!</span>`:'';
-  const pb=ps.total>0?`<span class="badge ${ps.confirmed===ps.total&&ps.total>0?'bok':'bgray'}">${ps.confirmed}/${ps.total}出席</span>`:'';
-  const edetail=isOpen?`<div class="edetail">${renderDetail(ev)}</div>`:'';
-  return`<div class="ecard${isOpen?' open':''}${ca?' cwarn':''}" id="ec${ev.id}">
-    <div class="ehead" onclick="tog(${ev.id})">
-      ${ring(p.pct)}
-      <div class="emeta">
-        <div class="en">${ev.name}</div>
-        <div class="es">${ev.date||'待定'}${timeStr?' · '+timeStr:''} · ${ev.hospital}</div>
-        ${ev.venue?`<div class="es">${ev.venue}</div>`:''}
-        <div style="margin-top:2px">${dlChip(dEvent,'活動')}${dlChip(dRsvp,'RSVP')}</div>
-      </div>
-      <div class="ebs">${vb}${wb}${pb}${cb}</div>
-      <span class="chv">▼</span>
-    </div>${edetail}
+const p=prog(ev),cat=CATS[ev.category]||CATS.med,isOpen=S.openId===ev.id,ca=hasCA(ev);
+const ps=physStats(ev);
+const dEvent=daysTo(ev.date),dRsvp=daysTo(ev.rsvpDeadline);
+const timeStr=ev.startTime?(ev.startTime+(ev.endTime?’ – ‘+ev.endTime:’’)):’’;
+// Badges
+let badges=’’;
+if(ev.category===‘med’){
+const v1=ev.checklist.find(c=>c.cat===‘VEM’)?.items.find(i=>i.id===‘v1’)?.done;
+const v5=ev.checklist.find(c=>c.cat===‘VEM’)?.items.find(i=>i.id===‘v5’)?.done;
+const w2=ev.checklist.find(c=>c.cat===‘Work Order’)?.items.find(i=>i.id===‘w2’)?.done;
+badges+=v5?`<span class="badge bok">VEM 已關</span>`:v1?`<span class="badge binfo">VEM 開啟</span>`:`<span class="badge bgray">VEM 未開</span>`;
+badges+=w2?`<span class="badge bok">WO 核准</span>`:`<span class="badge bgray">WO 待核</span>`;
+if(ca)badges+=`<span class="badge bwarn">Compliance!</span>`;
+}
+if(ev.category===‘corp’){
+badges+=`<span class="badge binfo">${ev.corpDept||ev.subType||'公司'}</span>`;
+}
+if(ev.category===‘collab’){
+badges+=`<span class="badge bpurple">${ev.collabColleague?ev.collabColleague.split('（')[0]:'同事'}</span>`;
+}
+if(ev.category===‘gs’){
+const gsOk=ps.confirmed>0;
+badges+=`<span class="badge ${gsOk?'bok':'bcoral'}">${ps.confirmed} 開始處方</span>`;
+}
+if(ps.total>0)badges+=`<span class="badge bgray">${ps.confirmed}/${ps.total}${ev.category==='gs'?'醫師':'出席'}</span>`;
+
+const edetail=isOpen?`<div class="edetail">${renderDetail(ev)}</div>`:’’;
+return`<div class="ecard ${cat.cardCls}${isOpen?' open':''}${ca&&ev.category==='med'?' cwarn':''}" id="ec${ev.id}"> <div class="ehead" onclick="tog(${ev.id})"> ${ring(p.pct,CAT_COLOR[ev.category])} <div class="emeta"> <div><span class="ecat-tag ${cat.tagCls}">${cat.short}</span></div> <div class="en">${ev.name}</div> <div class="es">${ev.date||'待定'}${timeStr?' · '+timeStr:''} · ${ev.hospital}</div> ${ev.venue?`<div class="es">${ev.venue}</div>`:’’}
+<div style="margin-top:2px">${dlChip(dEvent,‘活動’)}${dlChip(dRsvp,‘RSVP’)}</div>
+</div>
+<div class="ebs">${badges}</div>
+<span class="chv">▼</span>
+</div>${edetail}
+
   </div>`;
 }
 
 function renderDetail(ev){
-  const t=S.tab[ev.id]||0;
-  const p=prog(ev),ps=physStats(ev),agLen=(ev.agenda||[]).length;
-  const tabs=[
-    {lbl:'活動資訊'},
-    {lbl:`清單 ${p.done}/${p.total}`},
-    {lbl:`邀請名單 ${ps.total}人`},
-    {lbl:`Agenda${agLen?' ('+agLen+')':''}`},
-  ];
-  return`<div class="etabs">${tabs.map((tb,i)=>`<button class="etab${t===i?' act':''}" onclick="setTab(${ev.id},${i})">${tb.lbl}</button>`).join('')}</div>
-  <div class="tab-body">${[renderInfo,renderChecklist,renderPhysicians,renderAgenda][t](ev)}</div>`;
+const t=S.tab[ev.id]||0;
+const p=prog(ev),ps=physStats(ev),agLen=(ev.agenda||[]).length;
+const cat=ev.category,ac=CAT_ACT[cat]||‘act’;
+const physLabel=cat===‘gs’?`目標醫師 ${ps.total}人`:`邀請名單 ${ps.total}人`;
+const tabs=[{lbl:‘活動資訊’},{lbl:`清單 ${p.done}/${p.total}`},{lbl:physLabel}];
+if(cat!==‘gs’)tabs.push({lbl:`Agenda${agLen?' ('+agLen+')':''}`});
+tabs.push({lbl:‘備忘’});
+const tabHtml=tabs.map((tb,i)=>`<button class="etab${t===i?' '+ac:''}" onclick="setTab(${ev.id},${i})">${tb.lbl}</button>`).join(’’);
+const bodies=[renderInfo,renderChecklist,renderPhysicians,cat!==‘gs’?renderAgenda:renderNotes,renderNotes];
+const bodyFn=bodies[Math.min(t,bodies.length-1)];
+return`<div class="etabs">${tabHtml}</div><div class="tab-body">${bodyFn(ev,t)}</div>`;
 }
 
 function renderInfo(ev){
-  const ps=physStats(ev);
-  const durStr=(()=>{if(!ev.startTime||!ev.endTime)return'未設定';const[h1,m1]=ev.startTime.split(':').map(Number),[h2,m2]=ev.endTime.split(':').map(Number);const min=(h2*60+m2)-(h1*60+m1);return min>0?`${Math.floor(min/60)}小時${min%60?min%60+'分':''}`:'-';})();
-  const showEdit=S.showEditInfo[ev.id];
-  const banner=showEdit?`<div class="info-edit-form">
-    <div class="fg" style="grid-template-columns:1fr 1fr">
-      <div class="ff full"><label>活動名稱</label><input value="${ev.name}" oninput="uif(${ev.id},'name',this.value)"></div>
-      <div class="ff"><label>活動日期</label><input type="date" value="${ev.date||''}" oninput="uif(${ev.id},'date',this.value)"></div>
-      <div class="ff"><label>RSVP 截止</label><input type="date" value="${ev.rsvpDeadline||''}" oninput="uif(${ev.id},'rsvpDeadline',this.value)"></div>
-      <div class="ff"><label>開始時間</label><input type="time" value="${ev.startTime||''}" oninput="uif(${ev.id},'startTime',this.value)"></div>
-      <div class="ff"><label>結束時間</label><input type="time" value="${ev.endTime||''}" oninput="uif(${ev.id},'endTime',this.value)"></div>
-      <div class="ff"><label>醫院</label><select onchange="uif(${ev.id},'hospital',this.value)">${HOSPITALS.map(h=>`<option ${ev.hospital===h?'selected':''}>${h}</option>`).join('')}</select></div>
-      <div class="ff"><label>活動類型</label><select onchange="uif(${ev.id},'type',this.value)">${TYPES.map(t=>`<option ${ev.type===t?'selected':''}>${t}</option>`).join('')}</select></div>
-      <div class="ff full"><label>場地</label><input value="${ev.venue||''}" placeholder="詳細場地名稱" oninput="uif(${ev.id},'venue',this.value)"></div>
-    </div>
-    <div class="form-acts"><button class="btn btn-sm" onclick="S.showEditInfo[${ev.id}]=false;render()">取消</button><button class="btn btn-sm btn-teal" onclick="saveInfo(${ev.id})">儲存</button></div>
-  </div>`:`<div class="info-banner">
+const cat=CATS[ev.category]||CATS.med,ps=physStats(ev);
+const durStr=(()=>{if(!ev.startTime||!ev.endTime)return’未設定’;const[h1,m1]=ev.startTime.split(’:’).map(Number),[h2,m2]=ev.endTime.split(’:’).map(Number);const min=(h2*60+m2)-(h1*60+m1);return min>0?`${Math.floor(min/60)}h${min%60?min%60+'m':''}`:’-’;})();
+const showEdit=S.showEditInfo[ev.id];
+
+// Category-specific extra info rows
+let extraInfo=’’;
+if(ev.category===‘corp’){
+extraInfo=`<div class="info-row"><span class="info-icon">🏢</span>${ev.corpDept||''} 部門主辦${ev.corpOrganizer?' · '+ev.corpOrganizer:''}</div>`;
+if(ev.yourRole)extraInfo+=`<div class="info-row"><span class="info-icon">👤</span>我的任務：${ev.yourRole}</div>`;
+}
+if(ev.category===‘collab’){
+if(ev.collabColleague)extraInfo=`<div class="info-row"><span class="info-icon">🤝</span>主辦同事：${ev.collabColleague}</div>`;
+if(ev.yourRole)extraInfo+=`<div class="info-row"><span class="info-icon">👤</span>我的任務：${ev.yourRole}</div>`;
+}
+if(ev.category===‘gs’){
+if(ev.gsObjective)extraInfo=`<div class="info-row"><span class="info-icon">🎯</span>${ev.gsObjective}</div>`;
+extraInfo+=`<div class="info-row"><span class="info-icon">📊</span>進度：${ev.gsOutcome||'進行中'}</div>`;
+}
+
+// Edit form — category-specific fields
+let catFields=’’;
+if(ev.category===‘med’){
+catFields=`<div class="ff"><label>活動類型</label><select onchange="uif(${ev.id},'subType',this.value)">${MED_TYPES.map(t=>`<option ${ev.subType===t?‘selected’:’’}>${t}</option>`).join('')}</select></div>`;
+}
+if(ev.category===‘corp’){
+catFields=`<div class="ff"><label>主辦部門</label><select onchange="uif(${ev.id},'corpDept',this.value)"><option ${ev.corpDept==='Marketing'?'selected':''}>Marketing</option><option ${ev.corpDept==='Medical'?'selected':''}>Medical</option><option ${ev.corpDept==='其他'?'selected':''}>其他</option></select></div> <div class="ff"><label>主辦窗口</label><input value="${ev.corpOrganizer||''}" placeholder="負責人姓名" oninput="uif(${ev.id},'corpOrganizer',this.value)"></div> <div class="ff full"><label>我的任務</label><input value="${ev.yourRole||''}" placeholder="邀請負責醫師、協助現場等" oninput="uif(${ev.id},'yourRole',this.value)"></div>`;
+}
+if(ev.category===‘collab’){
+catFields=`<div class="ff"><label>主辦同事</label><input value="${ev.collabColleague||''}" placeholder="同事姓名（醫院）" oninput="uif(${ev.id},'collabColleague',this.value)"></div> <div class="ff full"><label>我的任務</label><input value="${ev.yourRole||''}" placeholder="負責邀請哪些醫師、協助事項" oninput="uif(${ev.id},'yourRole',this.value)"></div>`;
+}
+if(ev.category===‘gs’){
+catFields=`<div class="ff full"><label>拜訪目標</label><input value="${ev.gsObjective||''}" placeholder="例：提升 Abemaciclib 處方滲透率" oninput="uif(${ev.id},'gsObjective',this.value)"></div> <div class="ff"><label>進度狀態</label><select onchange="uif(${ev.id},'gsOutcome',this.value)">${['進行中','部分成功','達成目標','需再追蹤'].map(o=>`<option ${ev.gsOutcome===o?‘selected’:’’}>${o}</option>`).join('')}</select></div>`;
+}
+
+const editBlock=showEdit?`<div class="info-edit-form"> <div class="fg" style="grid-template-columns:1fr 1fr"> <div class="ff full"><label>活動名稱</label><input value="${ev.name}" oninput="uif(${ev.id},'name',this.value)"></div> <div class="ff"><label>活動日期</label><input type="date" value="${ev.date||''}" oninput="uif(${ev.id},'date',this.value)"></div> <div class="ff"><label>RSVP 截止</label><input type="date" value="${ev.rsvpDeadline||''}" oninput="uif(${ev.id},'rsvpDeadline',this.value)"></div> <div class="ff"><label>開始時間</label><input type="time" value="${ev.startTime||''}" oninput="uif(${ev.id},'startTime',this.value)"></div> <div class="ff"><label>結束時間</label><input type="time" value="${ev.endTime||''}" oninput="uif(${ev.id},'endTime',this.value)"></div> <div class="ff"><label>醫院</label><select onchange="uif(${ev.id},'hospital',this.value)">${HOSPITALS.map(h=>`<option ${ev.hospital===h?‘selected’:’’}>${h}</option>`).join(’’)}</select></div>
+<div class="ff full"><label>場地</label><input value="${ev.venue||''}" placeholder="詳細場地" oninput="uif(${ev.id},'venue',this.value)"></div>
+${catFields}
+</div>
+<div class="form-acts"><button class="btn btn-sm" onclick="S.showEditInfo[${ev.id}]=false;render()">取消</button><button class="btn btn-sm btn-teal" onclick="saveInfo(${ev.id})">儲存</button></div>
+
+  </div>`
+  :`<div class="info-banner ${cat.bannCls}">
     <div class="info-ev-name">${ev.name}</div>
     <div class="info-row"><span class="info-icon">📅</span>${ev.date||'待定'}</div>
     <div class="info-row"><span class="info-icon">🕐</span>${ev.startTime||'時間待定'}${ev.endTime?' – '+ev.endTime:''}</div>
     <div class="info-row"><span class="info-icon">📍</span>${ev.venue||'場地待定'}</div>
-    <div class="info-row"><span class="info-icon">🏥</span>${ev.hospital} · ${ev.type}</div>
+    <div class="info-row"><span class="info-icon">🏥</span>${ev.hospital}${ev.subType?' · '+ev.subType:''}</div>
     ${ev.rsvpDeadline?`<div class="info-row"><span class="info-icon">📋</span>RSVP 截止：${ev.rsvpDeadline}</div>`:''}
+    ${extraInfo}
     <button class="info-edit-btn" onclick="S.showEditInfo[${ev.id}]=true;render()">編輯活動資訊</button>
   </div>`;
-  return`${banner}
+
+// Stats section
+const isMed=ev.category===‘med’;
+const isGs=ev.category===‘gs’;
+const statRow=isGs?` <div class="phys-row-cnt"> <div class="pcnt"><div class="pcnt-n">${ps.total}</div><div class="pcnt-l">目標醫師</div></div> <div class="pcnt"><div class="pcnt-n" style="color:#3B6D11">${ps.confirmed}</div><div class="pcnt-l">開始處方</div></div> <div class="pcnt"><div class="pcnt-n" style="color:var(--teal)">${ps.noResp}</div><div class="pcnt-l">有意願</div></div> <div class="pcnt"><div class="pcnt-n" style="color:var(--amber-m)">${ps.visited||0}</div><div class="pcnt-l">已拜訪</div></div> <div class="pcnt"><div class="pcnt-n" style="color:var(--red)">${ps.declined}</div><div class="pcnt-l">拒絕</div></div> </div>`:
+`<div class="phys-row-cnt"> <div class="pcnt"><div class="pcnt-n">${ps.total}</div><div class="pcnt-l">邀請人數</div></div> <div class="pcnt"><div class="pcnt-n" style="color:var(--teal)">${ps.confirmed}</div><div class="pcnt-l">確認出席</div></div> <div class="pcnt"><div class="pcnt-n" style="color:var(--amber-m)">${ps.noResp}</div><div class="pcnt-l">未回覆</div></div> <div class="pcnt"><div class="pcnt-n" style="color:var(--red)">${ps.declined}</div><div class="pcnt-l">婉拒</div></div> </div>`;
+
+return`${editBlock}
+
   <div class="info-grid">
     <div class="icard"><div class="icard-lbl">活動時長</div><div class="icard-val">${durStr}</div></div>
-    <div class="icard"><div class="icard-lbl">Agenda 議程</div><div class="icard-val">${(ev.agenda||[]).length} 項</div></div>
+    <div class="icard"><div class="icard-lbl">${isGs?'拜訪人數':'進度'}</div><div class="icard-val">${isGs?ps.total+'人':prog(ev).pct+'%'}</div></div>
   </div>
-  <div class="phys-row-cnt">
-    <div class="pcnt"><div class="pcnt-n">${ps.total}</div><div class="pcnt-l">邀請人數</div></div>
-    <div class="pcnt"><div class="pcnt-n" style="color:var(--teal)">${ps.confirmed}</div><div class="pcnt-l">確認出席</div></div>
-    <div class="pcnt"><div class="pcnt-n" style="color:var(--amber-m)">${ps.noResp}</div><div class="pcnt-l">未回覆</div></div>
-    <div class="pcnt"><div class="pcnt-n" style="color:var(--red)">${ps.declined}</div><div class="pcnt-l">婉拒</div></div>
-    <div class="pcnt"><div class="pcnt-n" style="color:var(--gray)">${ps.waiting}</div><div class="pcnt-l">待邀請</div></div>
-  </div>
-  <div class="detfoot"><span class="detfoot-info">進度 ${prog(ev).pct}%（${prog(ev).done}/${prog(ev).total} 項）</span><button class="btn-danger" onclick="delEv(${ev.id})">刪除活動</button></div>`;
+  ${statRow}
+  <div class="detfoot"><span class="detfoot-info">清單進度 ${prog(ev).pct}%（${prog(ev).done}/${prog(ev).total} 項）</span><button class="btn-danger" onclick="delEv(${ev.id})">刪除活動</button></div>`;
 }
 
 function renderChecklist(ev){
-  const p=prog(ev);
-  return ev.checklist.map(cat=>`
-    <div class="stit">${cat.cat} <span class="spg">${cat.items.filter(i=>i.done).length}/${cat.items.length}</span></div>
-    ${cat.items.map(item=>`<div class="ci ${item.done?'done':''}">
-      <input type="checkbox" id="ck_${ev.id}_${item.id}" ${item.done?'checked':''} onchange="tc(${ev.id},'${item.id}',this.checked)">
-      <label class="cilbl" for="ck_${ev.id}_${item.id}">${item.label}</label>
-      ${item.c?'<span class="ctag">Compliance</span>':''}
-    </div>`).join('')}
-  `).join('')+`<div class="detfoot"><span class="detfoot-info">${p.done}/${p.total} 完成${p.pct===100?' · 全部完成 ✓':` · 待辦 ${p.total-p.done} 項`}</span><span></span></div>`;
+const p=prog(ev);
+return ev.checklist.map(cat=>` <div class="stit">${cat.cat} <span class="spg">${cat.items.filter(i=>i.done).length}/${cat.items.length}</span></div> ${cat.items.map(item=>`<div class="ci ${item.done?'done':''}">
+<input type=“checkbox” id=“ck_${ev.id}_${item.id}” ${item.done?‘checked’:’’} onchange=“tc(${ev.id},’${item.id}’,this.checked)”>
+<label class="cilbl" for="ck_${ev.id}_${item.id}">${item.label}</label>
+${item.c?’<span class="ctag">Compliance</span>’:’’}
+</div>`).join('')} `).join(’’)+`<div class="detfoot"><span class="detfoot-info">${p.done}/${p.total} 完成${p.pct===100?' · 全部完成 ✓':` · 待辦 ${p.total-p.done} 項`}</span><span></span></div>`;
 }
 
 function renderPhysicians(ev){
-  const ps=physStats(ev),rsvpDays=daysTo(ev.rsvpDeadline);
-  const statsHtml=`<div class="phys-stats">
-    <div class="pstat"><div class="pstat-n" style="color:var(--teal)">${ps.confirmed}</div><div class="pstat-l">確認出席</div></div>
-    <div class="pstat"><div class="pstat-n" style="color:var(--amber-m)">${ps.noResp}</div><div class="pstat-l">待回覆</div></div>
-    <div class="pstat"><div class="pstat-n" style="color:var(--red)">${ps.declined}</div><div class="pstat-l">婉拒</div></div>
-    <div class="pstat"><div class="pstat-n" style="color:var(--gray)">${ps.waiting}</div><div class="pstat-l">待邀請</div></div>
+const ps=physStats(ev),rsvpDays=daysTo(ev.rsvpDeadline);
+const isGs=ev.category===‘gs’;
+const statuses=getStatuses(ev),scls=getScls(ev);
+const statLabel=isGs?[‘開始處方’,‘有意願’,‘拒絕’,‘目標’]:[‘確認出席’,‘待回覆’,‘婉拒’,‘待邀請’];
+const statsHtml=`<div class="phys-stats">
+<div class="pstat"><div class="pstat-n" style="color:var(--teal)">${ps.confirmed}</div><div class="pstat-l">${statLabel[0]}</div></div>
+<div class="pstat"><div class="pstat-n" style="color:var(--amber-m)">${ps.noResp}</div><div class="pstat-l">${statLabel[1]}</div></div>
+<div class="pstat"><div class="pstat-n" style="color:var(--red)">${ps.declined}</div><div class="pstat-l">${statLabel[2]}</div></div>
+<div class="pstat"><div class="pstat-n" style="color:var(--gray)">${ps.waiting}</div><div class="pstat-l">${statLabel[3]}</div></div>
+
   </div>`;
-  const rsvpBlock=ev.rsvpDeadline?`<div class="rsvp-bar"><span>RSVP 截止：${ev.rsvpDeadline}</span><b>${rsvpDays!==null?(rsvpDays<0?`已過 ${-rsvpDays} 天`:rsvpDays===0?'今天截止':`還有 ${rsvpDays} 天`):''}</b></div>`:'';
+  const rsvpBlock=(!isGs&&ev.rsvpDeadline)?`<div class="rsvp-bar"><span>RSVP 截止：${ev.rsvpDeadline}</span><b>${rsvpDays!==null?(rsvpDays<0?`已過 ${-rsvpDays} 天`:rsvpDays===0?'今天截止':`還有 ${rsvpDays} 天`):''}</b></div>`:'';
   const rows=(ev.physicians||[]).map(ph=>{
-    const sc=SCLS[ph.status]||'s-waiting';
+    const sc=scls[ph.status]||'s-waiting';
     const initials=ph.name?ph.name.replace(/醫師|主任|教授/g,'').slice(-2):'?';
     return`<div class="pr-row">
       <div class="av ${sc}">${initials}</div>
       <div class="pr-info">
         <div class="pr-name">${ph.name}</div>
         <div class="pr-sub">${ph.title} · ${ph.dept||''}</div>
-        ${ph.invitedDate?`<div class="pr-dl">邀請日：${ph.invitedDate}</div>`:''}
+        ${ph.invitedDate?`<div class="pr-dl">${isGs?'加入日':'邀請日'}：${ph.invitedDate}</div>`:''}
         ${ph.rsvpDl?`<div class="pr-dl">RSVP：${ph.rsvpDl}</div>`:''}
+        ${ph.notes?`<div class="pr-dl">${ph.notes}</div>`:''}
       </div>
       <button class="status-btn ${sc}" onclick="cycleStatus(${ev.id},${ph.id})">${ph.status}</button>
       <button class="pr-del" onclick="delPhys(${ev.id},${ph.id})">×</button>
@@ -414,222 +612,192 @@ function renderPhysicians(ev){
   }).join('');
   const showForm=S.showAddPhys[ev.id];
   const pf=S.physForm[ev.id]||{};
+  const addLabel=isGs?'新增目標醫師':'新增邀請醫師';
+  const notesField=isGs?`<div class="ff full"><label>備註（反應 / 問題）</label><input placeholder="例：對 OS data 有疑問" value="${pf.notes||''}" oninput="upf(${ev.id},'notes',this.value)"></div>`:'';
   const addForm=showForm?`<div class="add-form-box">
     <div class="fg">
       <div class="ff"><label>姓名</label><input placeholder="陳○○醫師" value="${pf.name||''}" oninput="upf(${ev.id},'name',this.value)"></div>
       <div class="ff"><label>職稱</label><input placeholder="主治醫師" value="${pf.title||'主治醫師'}" oninput="upf(${ev.id},'title',this.value)"></div>
       <div class="ff"><label>科別</label><input placeholder="血液腫瘤科" value="${pf.dept||''}" oninput="upf(${ev.id},'dept',this.value)"></div>
-      <div class="ff"><label>邀請日期</label><input type="date" value="${pf.invitedDate||todayStr()}" oninput="upf(${ev.id},'invitedDate',this.value)"></div>
-      <div class="ff"><label>RSVP 截止</label><input type="date" value="${pf.rsvpDl||ev.rsvpDeadline||''}" oninput="upf(${ev.id},'rsvpDl',this.value)"></div>
-      <div class="ff"><label>狀態</label><select onchange="upf(${ev.id},'status',this.value)">${STATUSES.map(s=>`<option ${(pf.status||'待邀請')===s?'selected':''}>${s}</option>`).join('')}</select></div>
+      ${!isGs?`<div class="ff"><label>邀請日期</label><input type="date" value="${pf.invitedDate||todayStr()}" oninput="upf(${ev.id},'invitedDate',this.value)"></div>
+      <div class="ff"><label>RSVP 截止</label><input type="date" value="${pf.rsvpDl||ev.rsvpDeadline||''}" oninput="upf(${ev.id},'rsvpDl',this.value)"></div>`:''}
+      <div class="ff"><label>狀態</label><select onchange="upf(${ev.id},'status',this.value)">${statuses.map(s=>`<option ${(pf.status||statuses[0])===s?'selected':''}>${s}</option>`).join('')}</select></div>
+      ${notesField}
     </div>
     <div class="form-acts"><button class="btn btn-sm" onclick="toggleAddPhys(${ev.id})">取消</button><button class="btn btn-sm btn-teal" onclick="addPhys(${ev.id})">新增</button></div>
-  </div>`:`<button class="dash-btn" onclick="toggleAddPhys(${ev.id})">＋ 新增邀請醫師</button>`;
-  return`${statsHtml}${rsvpBlock}${!rows&&!showForm?'<div style="text-align:center;padding:20px;color:var(--t3);font-size:13px;">尚未新增邀請醫師</div>':''}${rows}${addForm}`;
+  </div>`:`<button class="dash-btn" onclick="toggleAddPhys(${ev.id})">＋ ${addLabel}</button>`;
+  return`${statsHtml}${rsvpBlock}${!(ev.physicians||[]).length&&!showForm?'<div style="text-align:center;padding:20px;color:var(--t3);font-size:13px;">尚未新增</div>':''}${rows}${addForm}`;
 }
 
 function renderAgenda(ev){
-  const ags=ev.agenda||[];
-  const showForm=S.showAddAg[ev.id];
-  const af=S.agForm[ev.id]||{};
-  const agItems=ags.map(ag=>{
-    const typeCls='type-'+(ag.type==='Q&A'?'QA':ag.type);
-    const dur=agDur(ag.startTime,ag.endTime);
-    return`<div class="ag-item">
-      <div class="ag-tc">
-        <div class="ag-time">${ag.startTime||''}${ag.endTime?'\n'+ag.endTime:''}</div>
-        ${dur?`<div class="ag-dur">${dur}</div>`:''}
-      </div>
-      <div class="ag-body">
-        <span class="ag-badge ${typeCls}">${ag.type}</span>
-        <div class="ag-topic">${ag.topic}</div>
-        ${ag.speaker?`<div class="ag-spk">${ag.speaker}</div>`:''}
-      </div>
-      <button class="ag-del" onclick="delAg(${ev.id},${ag.id})">×</button>
-    </div>`;
-  }).join('');
-  const addForm=showForm?`<div class="add-form-box">
-    <div class="fg">
-      <div class="ff"><label>開始時間</label><input type="time" value="${af.startTime||''}" oninput="uagf(${ev.id},'startTime',this.value)"></div>
-      <div class="ff"><label>結束時間</label><input type="time" value="${af.endTime||''}" oninput="uagf(${ev.id},'endTime',this.value)"></div>
-      <div class="ff"><label>類型</label><select onchange="uagf(${ev.id},'type',this.value)">${AG_TYPES.map(t=>`<option ${(af.type||'演講')===t?'selected':''}>${t}</option>`).join('')}</select></div>
-      <div class="ff"><label>講者 / 主持人</label><input placeholder="姓名" value="${af.speaker||''}" oninput="uagf(${ev.id},'speaker',this.value)"></div>
-      <div class="ff full"><label>題目 / 項目</label><input placeholder="演講題目或議程項目名稱" value="${af.topic||''}" oninput="uagf(${ev.id},'topic',this.value)"></div>
-    </div>
-    <div class="form-acts"><button class="btn btn-sm" onclick="toggleAddAg(${ev.id})">取消</button><button class="btn btn-sm btn-teal" onclick="addAg(${ev.id})">新增</button></div>
+const ags=ev.agenda||[],showForm=S.showAddAg[ev.id],af=S.agForm[ev.id]||{};
+const agItems=ags.map(ag=>{
+const typeCls=‘type-’+(ag.type===‘Q&A’?‘QA’:ag.type);
+const dur=agDur(ag.startTime,ag.endTime);
+return`<div class="ag-item"> <div class="ag-tc"><div class="ag-time">${ag.startTime||''}${ag.endTime?'\n– '+ag.endTime:''}</div>${dur?`<div class="ag-dur">${dur}</div>`:''}</div> <div class="ag-body"><span class="ag-badge ${typeCls}">${ag.type}</span><div class="ag-topic">${ag.topic}</div>${ag.speaker?`<div class="ag-spk">${ag.speaker}</div>`:''}</div> <button class="ag-del" onclick="delAg(${ev.id},${ag.id})">×</button> </div>`;
+}).join(’’);
+const addForm=showForm?`<div class="add-form-box"> <div class="fg"> <div class="ff"><label>開始時間</label><input type="time" value="${af.startTime||''}" oninput="uagf(${ev.id},'startTime',this.value)"></div> <div class="ff"><label>結束時間</label><input type="time" value="${af.endTime||''}" oninput="uagf(${ev.id},'endTime',this.value)"></div> <div class="ff"><label>類型</label><select onchange="uagf(${ev.id},'type',this.value)">${AG_TYPES.map(t=>`<option ${(af.type||‘演講’)===t?‘selected’:’’}>${t}</option>`).join(’’)}</select></div>
+<div class="ff"><label>講者</label><input placeholder="姓名" value="${af.speaker||''}" oninput="uagf(${ev.id},'speaker',this.value)"></div>
+<div class="ff full"><label>題目 / 項目</label><input placeholder="演講題目或議程項目" value="${af.topic||''}" oninput="uagf(${ev.id},'topic',this.value)"></div>
+</div>
+<div class="form-acts"><button class="btn btn-sm" onclick="toggleAddAg(${ev.id})">取消</button><button class="btn btn-sm btn-teal" onclick="addAg(${ev.id})">新增</button></div>
+
   </div>`:'';
-  return`<div class="ag-toolbar">
-    <span class="ag-info">共 ${ags.length} 項議程</span>
-    ${ags.length>0?`<button class="btn-print" onclick="printAgenda(${ev.id})">列印 / 匯出</button>`:''}
-  </div>
-  ${ags.length===0&&!showForm?'<div style="text-align:center;padding:20px;color:var(--t3);font-size:13px;">尚未建立議程，點下方按鈕新增</div>':''}
+  return`<div class="ag-toolbar"><span class="ag-info">共 ${ags.length} 項議程</span>${ags.length>0?`<button class="btn-print" onclick="printAgenda(${ev.id})">列印 / 匯出</button>`:''}</div>
+  ${ags.length===0&&!showForm?'<div style="text-align:center;padding:20px;color:var(--t3);font-size:13px;">尚未建立議程</div>':''}
   ${agItems}
   <button class="dash-btn" style="margin-top:4px" onclick="toggleAddAg(${ev.id})">＋ 新增議程項目</button>
   ${addForm}`;
 }
 
-function renderForm(){
-  const f=S.form;
-  return`<div class="overlay" onclick="closeFormIfBg(event)">
-    <div class="modal">
-      <div class="modal-hdr"><span class="modal-ttl">新增活動</span><button class="modal-close" onclick="sf()">×</button></div>
-      <div class="modal-grid">
-        <div class="ff full"><label>活動名稱</label><input placeholder="亞東 Abemaciclib Advisory Board" value="${f.name}" oninput="uf('name',this.value)"></div>
-        <div class="ff"><label>活動日期</label><input type="date" value="${f.date}" oninput="uf('date',this.value)"></div>
-        <div class="ff"><label>RSVP 截止</label><input type="date" value="${f.rsvpDeadline}" oninput="uf('rsvpDeadline',this.value)"></div>
-        <div class="ff"><label>開始時間</label><input type="time" value="${f.startTime}" oninput="uf('startTime',this.value)"></div>
-        <div class="ff"><label>結束時間</label><input type="time" value="${f.endTime}" oninput="uf('endTime',this.value)"></div>
-        <div class="ff"><label>醫院</label><select onchange="uf('hospital',this.value)">${HOSPITALS.map(h=>`<option ${f.hospital===h?'selected':''}>${h}</option>`).join('')}</select></div>
-        <div class="ff"><label>活動類型</label><select onchange="uf('type',this.value)">${TYPES.map(t=>`<option ${f.type===t?'selected':''}>${t}</option>`).join('')}</select></div>
-        <div class="ff full"><label>場地</label><input placeholder="詳細場地名稱" value="${f.venue}" oninput="uf('venue',this.value)"></div>
-      </div>
-      <div class="modal-foot">
-        <button class="btn-full" style="background:var(--gray-l);color:var(--text)" onclick="sf()">取消</button>
-        <button class="btn-full btn-teal" onclick="addEv()">建立活動</button>
-      </div>
-    </div>
+function renderNotes(ev,tabIdx){
+// When called as the notes tab (last tab index), render notes textarea
+return`<div>
+<div style="font-size:12px;color:var(--t2);margin-bottom:8px;">備忘筆記（自動儲存）</div>
+<textarea class="notes-area" placeholder="重要細節、叮嚀事項、聯絡人電話…" oninput="saveNote(${ev.id},this.value)">${ev.notes||’’}</textarea>
+
   </div>`;
 }
 
-function render(){
-  const fev=S.filter==='全部'?S.events:S.events.filter(e=>e.hospital===S.filter);
-  const tp=S.events.reduce((s,e)=>s+e.checklist.flatMap(c=>c.items).filter(i=>!i.done).length,0);
-  const ca=S.events.filter(hasCA).length;
-  const totalPhys=S.events.reduce((s,e)=>s+(e.physicians||[]).length,0);
-  const cnf=S.events.reduce((s,e)=>s+(e.physicians||[]).filter(p=>p.status==='確認出席').length,0);
-  document.getElementById('app').innerHTML=`
-    <div class="hdr">
-      <div class="hdr-row">
-        <div><div class="app-ttl">活動管理</div><div class="app-sub">Abemaciclib · ${S.events.length} 場活動</div></div>
-        <button class="btn-add" onclick="sf()">＋ 新增活動</button>
-      </div>
-      <div class="filt">${['全部',...HOSPITALS].map(h=>`<button class="pill ${S.filter===h?'act':''}" onclick="fil('${h}')">${h}</button>`).join('')}</div>
-    </div>
-    <div class="stats">
-      <div class="sc"><div class="sv">${S.events.length}</div><div class="sl">活動總數</div></div>
-      <div class="sc"><div class="sv" style="color:var(--amber-m)">${tp}</div><div class="sl">清單待辦</div></div>
-      <div class="sc"><div class="sv" style="color:var(--red)">${ca}</div><div class="sl">Compliance 未完</div></div>
-      <div class="sc"><div class="sv" style="color:var(--teal)">${cnf}/${totalPhys}</div><div class="sl">醫師出席確認</div></div>
-    </div>
-    <div class="evlist">${fev.length===0?'<div class="empty"><div style="font-size:32px;margin-bottom:8px">📋</div>此篩選條件下無活動</div>':fev.map(renderCard).join('')}</div>
-    ${S.showForm?renderForm():''}
-  `;
+// ── Add Event Form ──
+function renderForm(){
+const f=S.form,cat=f.category;
+const catOpts=[
+{key:‘med’,icon:‘🩺’,name:‘自辦醫學活動’,sub:‘VEM・Work Order・Compliance’},
+{key:‘corp’,icon:‘🏢’,name:‘公司活動’,sub:‘Marketing / Medical 部門舉辦’},
+{key:‘collab’,icon:‘🤝’,name:‘同事活動’,sub:‘同事主辦，我協助邀請’},
+{key:‘gs’,icon:‘💼’,name:‘Group Selling’,sub:‘多醫師聯合拜訪’},
+];
+const catSel=catOpts.map(o=>`<div class="cat-opt${f.category===o.key?' sel-'+o.key:''}" onclick="uf('category','${o.key}')">
+<div class="co-icon">${o.icon}</div><div class="co-name">${o.name}</div><div class="co-sub">${o.sub}</div>
+
+  </div>`).join('');
+
+// Category-specific extra fields
+let extraFields=’’;
+if(cat===‘med’)extraFields=`<div class="ff"><label>活動類型</label><select onchange="uf('subType',this.value)">${MED_TYPES.map(t=>`<option ${f.subType===t?‘selected’:’’}>${t}</option>`).join('')}</select></div>`;
+if(cat===‘corp’)extraFields=`<div class="ff"><label>主辦部門</label><select onchange="uf('corpDept',this.value)"><option ${f.corpDept===‘Marketing’?‘selected’:’’}>Marketing</option><option ${f.corpDept===‘Medical’?‘selected’:’’}>Medical</option><option>其他</option></select></div>
+
+  <div class="ff"><label>主辦窗口</label><input placeholder="負責人姓名" value="${f.corpOrganizer||''}" oninput="uf('corpOrganizer',this.value)"></div>
+  <div class="ff full"><label>我的任務</label><input placeholder="邀請負責醫師、現場協助" value="${f.yourRole||''}" oninput="uf('yourRole',this.value)"></div>`;
+  if(cat==='collab')extraFields=`<div class="ff"><label>主辦同事</label><input placeholder="同事姓名（醫院）" value="${f.collabColleague||''}" oninput="uf('collabColleague',this.value)"></div>
+  <div class="ff full"><label>我的任務</label><input placeholder="負責邀請哪些醫師" value="${f.yourRole||''}" oninput="uf('yourRole',this.value)"></div>`;
+  if(cat==='gs')extraFields=`<div class="ff full"><label>拜訪目標</label><input placeholder="例：提升 Abemaciclib 處方滲透率" value="${f.gsObjective||''}" oninput="uf('gsObjective',this.value)"></div>`;
+
+const rsvpField=cat!==‘gs’?`<div class="ff"><label>RSVP 截止日</label><input type="date" value="${f.rsvpDeadline}" oninput="uf('rsvpDeadline',this.value)"></div>`:’’;
+
+return`<div class="overlay" onclick="closeFormIfBg(event)"> <div class="modal"> <div class="modal-hdr"><span class="modal-ttl">新增活動</span><button class="modal-close" onclick="sf()">×</button></div> <div style="font-size:11px;color:var(--t2);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">活動類別</div> <div class="cat-select">${catSel}</div> <div class="modal-grid"> <div class="ff full"><label>活動名稱</label><input placeholder="活動名稱" value="${f.name}" oninput="uf('name',this.value)"></div> <div class="ff"><label>活動日期</label><input type="date" value="${f.date}" oninput="uf('date',this.value)"></div> ${rsvpField} <div class="ff"><label>開始時間</label><input type="time" value="${f.startTime}" oninput="uf('startTime',this.value)"></div> <div class="ff"><label>結束時間</label><input type="time" value="${f.endTime}" oninput="uf('endTime',this.value)"></div> <div class="ff"><label>醫院</label><select onchange="uf('hospital',this.value)">${HOSPITALS.map(h=>`<option ${f.hospital===h?‘selected’:’’}>${h}</option>`).join(’’)}</select></div>
+<div class="ff full"><label>場地</label><input placeholder="場地名稱" value="${f.venue}" oninput="uf('venue',this.value)"></div>
+${extraFields}
+</div>
+<div class="modal-foot">
+<button class="btn-full" style="background:var(--gray-l);color:var(--text)" onclick="sf()">取消</button>
+<button class="btn-full btn-teal" onclick="addEv()">建立活動</button>
+</div>
+</div>
+
+  </div>`;
 }
 
-// Print Agenda
+// ── Main render ──
+function render(){
+let fev=S.events;
+if(S.filterCat!==‘all’)fev=fev.filter(e=>e.category===S.filterCat);
+if(S.filterHosp!==‘全部’)fev=fev.filter(e=>e.hospital===S.filterHosp);
+
+const tp=S.events.reduce((s,e)=>s+e.checklist.flatMap(c=>c.items).filter(i=>!i.done).length,0);
+const ca=S.events.filter(hasCA).length;
+const totalPhys=S.events.reduce((s,e)=>s+(e.physicians||[]).length,0);
+const cnf=S.events.reduce((s,e)=>s+(e.physicians||[]).filter(p=>p.status===‘確認出席’||p.status===‘開始處方’).length,0);
+
+const catFilters=[
+{key:‘all’,lbl:‘全部’,cls:‘pill-all’},
+{key:‘med’,lbl:‘🩺 自辦醫學’,cls:‘pill-med’},
+{key:‘corp’,lbl:‘🏢 公司活動’,cls:‘pill-corp’},
+{key:‘collab’,lbl:‘🤝 同事活動’,cls:‘pill-collab’},
+{key:‘gs’,lbl:‘💼 Group Selling’,cls:‘pill-gs’},
+];
+
+document.getElementById(‘app’).innerHTML=` <div class="hdr"> <div class="hdr-row"> <div><div class="app-ttl">活動管理</div><div class="app-sub">Abemaciclib · ${S.events.length} 場活動</div></div> <button class="btn-add" onclick="sf()">＋ 新增</button> </div> <div class="filt-wrap"> <div class="filt">${catFilters.map(f=>`<button class="pill ${f.cls}${S.filterCat===f.key?' act':''}" onclick="filCat('${f.key}')">${f.lbl}</button>`).join('')}</div> <div class="filt">${['全部',...HOSPITALS].map(h=>`<button class="pill pill-hosp${S.filterHosp===h?' act':''}" onclick="filHosp('${h}')">${h}</button>`).join('')}</div> </div> </div> <div class="stats"> <div class="sc"><div class="sv">${S.events.length}</div><div class="sl">活動總數</div></div> <div class="sc"><div class="sv" style="color:var(--amber-m)">${tp}</div><div class="sl">清單待辦</div></div> <div class="sc"><div class="sv" style="color:var(--red)">${ca}</div><div class="sl">Compliance 未完</div></div> <div class="sc"><div class="sv" style="color:var(--teal)">${cnf}/${totalPhys}</div><div class="sl">醫師確認 / 處方</div></div> </div> <div class="evlist">${fev.length===0?'<div class="empty"><div style="font-size:32px;margin-bottom:8px">📋</div>此篩選條件下無活動</div>':fev.map(renderCard).join('')}</div> ${S.showForm?renderForm():''} `;
+}
+
+// ── Print Agenda (unchanged logic) ──
 window.printAgenda=(eid)=>{
-  const ev=S.events.find(e=>e.id===eid);if(!ev)return;
-  const ags=ev.agenda||[];
-  const ps=physStats(ev);
-  const confirmedNames=(ev.physicians||[]).filter(p=>p.status==='確認出席').map(p=>p.name).join('、');
-  const invitedNames=(ev.physicians||[]).filter(p=>p.status==='已邀請/待回覆').map(p=>p.name).join('、');
-  const rows=ags.map(ag=>{
-    const dur=agDur(ag.startTime,ag.endTime);
-    const typeColor={'開場':'#185FA5','演講':'#0F6E56','討論':'#854F0B','Q&A':'#5F5E5A','休息':'#9A9893','閉幕':'#0F6E56','其他':'#5F5E5A'}[ag.type]||'#333';
-    return`<tr>
-      <td nowrap>${ag.startTime||''}${ag.endTime?' – '+ag.endTime:''}</td>
-      <td nowrap><span style="background:${typeColor}18;color:${typeColor};padding:1px 8px;border-radius:6px;font-size:11px;font-weight:600">${ag.type}</span></td>
-      <td>${ag.topic}</td>
-      <td>${ag.speaker||''}</td>
-      <td nowrap style="color:#888;font-size:12px">${dur}</td>
-    </tr>`;
-  }).join('');
-  const html=`<!DOCTYPE html><html lang="zh-TW"><head><meta charset="UTF-8"><title>議程 — ${ev.name}</title>
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:-apple-system,'PingFang TC','Noto Sans TC',sans-serif;max-width:720px;margin:40px auto;padding:0 28px;color:#18180F;font-size:14px}
-    .kicker{font-size:10px;color:#aaa;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
-    h1{font-size:22px;font-weight:700;color:#0F6E56;margin-bottom:10px;line-height:1.3}
-    .meta-row{display:flex;flex-wrap:wrap;gap:6px 20px;font-size:13px;color:#444;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid #0F6E56}
-    .meta-item{display:flex;align-items:center;gap:6px}
-    .section{margin-bottom:20px}
-    .sec-title{font-size:11px;font-weight:700;color:#0F6E56;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
-    table{width:100%;border-collapse:collapse}
-    th{background:#0F6E56;color:#fff;padding:8px 12px;text-align:left;font-size:12px;font-weight:600}
-    td{padding:9px 12px;border-bottom:1px solid #eee;font-size:13px;vertical-align:middle}
-    tr:nth-child(even) td{background:#f8faf8}
-    .att-box{background:#F0FAF6;border:1px solid #9FE1CB;border-radius:8px;padding:12px 16px;margin-bottom:20px}
-    .att-count{font-size:11px;font-weight:700;color:#0F6E56;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
-    .att-names{font-size:13px;line-height:1.8;color:#333}
-    .footer{font-size:11px;color:#bbb;margin-top:32px;border-top:1px solid #eee;padding-top:12px;display:flex;justify-content:space-between}
-    @media print{@page{margin:20mm}body{margin:0}}
-  </style></head><body>
-  <div class="kicker">Abemaciclib 醫學活動 — 議程</div>
-  <h1>${ev.name}</h1>
-  <div class="meta-row">
-    <div class="meta-item">📅 ${ev.date||'待定'}</div>
-    <div class="meta-item">🕐 ${ev.startTime||''}${ev.endTime?' – '+ev.endTime:''}</div>
-    <div class="meta-item">📍 ${ev.venue||'待定'}</div>
-    <div class="meta-item">🏥 ${ev.hospital}</div>
-    ${ev.rsvpDeadline?`<div class="meta-item">📋 RSVP 截止：${ev.rsvpDeadline}</div>`:''}
-  </div>
-  ${ps.total>0?`<div class="att-box">
-    <div class="att-count">出席名單（${ps.total} 位受邀，${ps.confirmed} 位確認）</div>
-    ${confirmedNames?`<div class="att-names"><b>確認出席：</b>${confirmedNames}</div>`:''}
-    ${invitedNames?`<div class="att-names" style="color:#888"><b>待回覆：</b>${invitedNames}</div>`:''}
-  </div>`:''}
-  <div class="section">
-    <div class="sec-title">活動議程</div>
-    <table>
-      <thead><tr><th>時間</th><th>類型</th><th>議程項目</th><th>講者 / 主持人</th><th>時長</th></tr></thead>
-      <tbody>${rows||'<tr><td colspan="5" style="text-align:center;color:#aaa;padding:20px">議程建立中</td></tr>'}</tbody>
-    </table>
-  </div>
-  <div class="footer">
-    <span>此議程如有調整，以現場公告為準。請準時出席，謝謝。</span>
-    <span>製作日期：${new Date().toLocaleDateString('zh-TW')}</span>
-  </div>
-  <script>setTimeout(()=>window.print(),300)<\/script>
-  </body></html>`;
-  const w=window.open('','_blank','width=800,height=700');
-  if(w){w.document.write(html);w.document.close();}
+const ev=S.events.find(e=>e.id===eid);if(!ev)return;
+const ags=ev.agenda||[],ps=physStats(ev);
+const confirmedNames=(ev.physicians||[]).filter(p=>p.status===‘確認出席’).map(p=>p.name).join(’、’);
+const rows=ags.map(ag=>{const dur=agDur(ag.startTime,ag.endTime);const tc={‘開場’:’#185FA5’,‘演講’:’#0F6E56’,‘討論’:’#854F0B’,‘Q&A’:’#5F5E5A’,‘休息’:’#9A9893’,‘閉幕’:’#0F6E56’,‘其他’:’#5F5E5A’}[ag.type]||’#333’;
+return`<tr><td nowrap>${ag.startTime||''}${ag.endTime?' – '+ag.endTime:''}</td><td nowrap><span style="background:${tc}18;color:${tc};padding:1px 8px;border-radius:6px;font-size:11px;font-weight:600">${ag.type}</span></td><td>${ag.topic}</td><td>${ag.speaker||''}</td><td nowrap style="color:#888;font-size:12px">${dur}</td></tr>`;
+}).join(’’);
+const html=`<!DOCTYPE html><html lang="zh-TW"><head><meta charset="UTF-8"><title>議程 — ${ev.name}</title>
+
+  <style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,'PingFang TC',sans-serif;max-width:720px;margin:40px auto;padding:0 28px;color:#18180F;font-size:14px}
+  .kicker{font-size:10px;color:#aaa;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}h1{font-size:22px;font-weight:700;color:#0F6E56;margin-bottom:10px}
+  .meta-row{display:flex;flex-wrap:wrap;gap:6px 20px;font-size:13px;color:#444;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid #0F6E56}
+  table{width:100%;border-collapse:collapse}th{background:#0F6E56;color:#fff;padding:8px 12px;text-align:left;font-size:12px;font-weight:600}
+  td{padding:9px 12px;border-bottom:1px solid #eee;font-size:13px;vertical-align:middle}tr:nth-child(even) td{background:#f8faf8}
+  .att-box{background:#F0FAF6;border:1px solid #9FE1CB;border-radius:8px;padding:12px 16px;margin-bottom:20px}
+  .footer{font-size:11px;color:#bbb;margin-top:32px;border-top:1px solid #eee;padding-top:12px;display:flex;justify-content:space-between}
+  @media print{@page{margin:20mm}body{margin:0}}</style></head><body>
+
+  <div class="kicker">Abemaciclib 醫學活動 — 議程</div><h1>${ev.name}</h1>
+  <div class="meta-row"><span>📅 ${ev.date||'待定'}</span><span>🕐 ${ev.startTime||''}${ev.endTime?' – '+ev.endTime:''}</span><span>📍 ${ev.venue||'待定'}</span><span>🏥 ${ev.hospital}</span>${ev.rsvpDeadline?`<span>📋 RSVP：${ev.rsvpDeadline}</span>`:''}</div>
+  ${confirmedNames?`<div class="att-box"><div style="font-size:11px;font-weight:700;color:#0F6E56;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px">確認出席（${ps.confirmed}位）</div><div style="font-size:13px">${confirmedNames}</div></div>`:''}
+  <table><thead><tr><th>時間</th><th>類型</th><th>議程項目</th><th>講者 / 主持人</th><th>時長</th></tr></thead><tbody>${rows||'<tr><td colspan="5" style="text-align:center;color:#aaa;padding:20px">議程建立中</td></tr>'}</tbody></table>
+  <div class="footer"><span>此議程如有調整，以現場公告為準</span><span>製作：${new Date().toLocaleDateString('zh-TW')}</span></div>
+  <script>setTimeout(()=>window.print(),300)<\/script></body></html>`;
+  const w=window.open('','_blank','width=800,height=700');if(w){w.document.write(html);w.document.close();}
 };
 
-// Actions
+// ── Actions ──
 window.sf=()=>{S.showForm=!S.showForm;render();}
-window.closeFormIfBg=(e)=>{if(e.target.classList.contains('overlay'))sf();}
-window.uf=(k,v)=>{S.form[k]=v;}
-window.fil=(f)=>{S.filter=f;render();}
+window.closeFormIfBg=(e)=>{if(e.target.classList.contains(‘overlay’))sf();}
+window.uf=(k,v)=>{S.form[k]=v;if(k===‘category’)render();} // re-render on cat change so form updates
+window.filCat=(f)=>{S.filterCat=f;render();}
+window.filHosp=(f)=>{S.filterHosp=f;render();}
 window.tog=(id)=>{S.openId=S.openId===id?null:id;if(!S.tab[id])S.tab[id]=0;render();}
 window.setTab=(id,t)=>{S.tab[id]=t;render();}
 window.tc=(eid,iid,checked)=>{const ev=S.events.find(e=>e.id===eid);if(!ev)return;ev.checklist.forEach(cat=>cat.items.forEach(i=>{if(i.id===iid)i.done=checked;}));save();render();}
 window.addEv=()=>{
-  if(!S.form.name.trim())return;
-  const ev={id:++nid,...S.form,checklist:mkCL(),physicians:[],agenda:[]};
-  S.events.unshift(ev);S.form={name:'',date:'',startTime:'',endTime:'',rsvpDeadline:'',hospital:'亞東醫院',type:'Advisory Board',venue:''};
-  S.showForm=false;S.openId=ev.id;S.tab[ev.id]=0;save();render();
+if(!S.form.name.trim())return;
+const ev={id:++nid,…S.form,checklist:mkCL(S.form.category),physicians:[],agenda:[],notes:’’};
+S.events.unshift(ev);
+S.form={category:‘med’,name:’’,date:’’,startTime:’’,endTime:’’,rsvpDeadline:’’,hospital:‘亞東醫院’,subType:‘Advisory Board’,venue:’’,corpOrganizer:’’,corpDept:‘Marketing’,yourRole:’’,collabColleague:’’,gsObjective:’’,gsOutcome:‘進行中’,notes:’’};
+S.showForm=false;S.openId=ev.id;S.tab[ev.id]=0;save();render();
 }
 window.delEv=(id)=>{S.events=S.events.filter(e=>e.id!==id);if(S.openId===id)S.openId=null;save();render();}
 window.uif=(eid,k,v)=>{const ev=S.events.find(e=>e.id===eid);if(ev)ev[k]=v;}
 window.saveInfo=(eid)=>{S.showEditInfo[eid]=false;save();render();}
-window.toggleAddPhys=(eid)=>{S.showAddPhys[eid]=!S.showAddPhys[eid];if(!S.physForm[eid])S.physForm[eid]={name:'',title:'主治醫師',dept:'',invitedDate:todayStr(),rsvpDl:'',status:'待邀請'};render();}
+window.saveNote=(eid,v)=>{const ev=S.events.find(e=>e.id===eid);if(ev){ev.notes=v;save();}}
+window.toggleAddPhys=(eid)=>{const ev=S.events.find(e=>e.id===eid);S.showAddPhys[eid]=!S.showAddPhys[eid];const st=getStatuses(ev||{category:‘med’});if(!S.physForm[eid])S.physForm[eid]={name:’’,title:‘主治醫師’,dept:’’,invitedDate:todayStr(),rsvpDl:’’,status:st[0],notes:’’};render();}
 window.upf=(eid,k,v)=>{if(!S.physForm[eid])S.physForm[eid]={};S.physForm[eid][k]=v;}
 window.addPhys=(eid)=>{
-  const ev=S.events.find(e=>e.id===eid);const pf=S.physForm[eid]||{};
-  if(!pf.name||!pf.name.trim())return;
-  if(!ev.physicians)ev.physicians=[];
-  ev.physicians.push({id:++npid,name:pf.name,title:pf.title||'主治醫師',dept:pf.dept||'',status:pf.status||'待邀請',invitedDate:pf.invitedDate||'',rsvpDl:pf.rsvpDl||''});
-  S.showAddPhys[eid]=false;S.physForm[eid]={};save();render();
+const ev=S.events.find(e=>e.id===eid);const pf=S.physForm[eid]||{};
+if(!pf.name||!pf.name.trim())return;
+if(!ev.physicians)ev.physicians=[];
+const st=getStatuses(ev);
+ev.physicians.push({id:++npid,name:pf.name,title:pf.title||‘主治醫師’,dept:pf.dept||’’,status:pf.status||st[0],invitedDate:pf.invitedDate||’’,rsvpDl:pf.rsvpDl||’’,notes:pf.notes||’’});
+S.showAddPhys[eid]=false;S.physForm[eid]={};save();render();
 }
 window.delPhys=(eid,pid)=>{const ev=S.events.find(e=>e.id===eid);if(ev)ev.physicians=(ev.physicians||[]).filter(p=>p.id!==pid);save();render();}
 window.cycleStatus=(eid,pid)=>{
-  const ev=S.events.find(e=>e.id===eid);if(!ev)return;
-  const ph=(ev.physicians||[]).find(p=>p.id===pid);if(!ph)return;
-  const idx=STATUSES.indexOf(ph.status);ph.status=STATUSES[(idx+1)%STATUSES.length];save();render();
+const ev=S.events.find(e=>e.id===eid);if(!ev)return;
+const ph=(ev.physicians||[]).find(p=>p.id===pid);if(!ph)return;
+const sts=getStatuses(ev);const idx=sts.indexOf(ph.status);ph.status=sts[(idx+1)%sts.length];save();render();
 }
-window.toggleAddAg=(eid)=>{S.showAddAg[eid]=!S.showAddAg[eid];if(!S.agForm[eid])S.agForm[eid]={startTime:'',endTime:'',type:'演講',topic:'',speaker:''};render();}
+window.toggleAddAg=(eid)=>{S.showAddAg[eid]=!S.showAddAg[eid];if(!S.agForm[eid])S.agForm[eid]={startTime:’’,endTime:’’,type:‘演講’,topic:’’,speaker:’’};render();}
 window.uagf=(eid,k,v)=>{if(!S.agForm[eid])S.agForm[eid]={};S.agForm[eid][k]=v;}
 window.addAg=(eid)=>{
-  const ev=S.events.find(e=>e.id===eid);const af=S.agForm[eid]||{};
-  if(!af.topic||!af.topic.trim())return;
-  if(!ev.agenda)ev.agenda=[];
-  ev.agenda.push({id:++nagid,startTime:af.startTime||'',endTime:af.endTime||'',type:af.type||'演講',topic:af.topic,speaker:af.speaker||''});
-  S.showAddAg[eid]=false;S.agForm[eid]={};save();render();
+const ev=S.events.find(e=>e.id===eid);const af=S.agForm[eid]||{};
+if(!af.topic||!af.topic.trim())return;
+if(!ev.agenda)ev.agenda=[];
+ev.agenda.push({id:++nagid,startTime:af.startTime||’’,endTime:af.endTime||’’,type:af.type||‘演講’,topic:af.topic,speaker:af.speaker||’’});
+S.showAddAg[eid]=false;S.agForm[eid]={};save();render();
 }
 window.delAg=(eid,aid)=>{const ev=S.events.find(e=>e.id===eid);if(ev)ev.agenda=(ev.agenda||[]).filter(a=>a.id!==aid);save();render();}
 
 render();
 </script>
+
 </body>
 </html>
-
